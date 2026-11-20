@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratorio Circuiti · Esercizi guidati Arduino – Pulsante e if</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F0F2F5;--line:#D9DEE5;--ink:#1F2933;--ink2:#52606D;--ink3:#8592A3;--blue:#1E6FD9;--blue2:#1557B0;--green:#2E9E44;--green2:#22803A;--orange:#F57C00;--red:#D32F2F;--code:#1E1E1E;
+  --sans:"Open Sans","Segoe UI",system-ui,sans-serif;--mono:"JetBrains Mono",Consolas,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}html,body{margin:0;height:100%}body{font-family:var(--sans);color:var(--ink);background:var(--bg);overflow:hidden}
+button{font-family:inherit;cursor:pointer}
+code{font-family:var(--mono);font-size:.88em;background:#EEF1F5;color:#0B4F9C;padding:.05em .35em;border-radius:4px}
+.btn{border:0;border-radius:6px;padding:9px 16px;font-weight:700;font-size:14px;background:var(--blue);color:#fff}.btn:hover{background:var(--blue2)}
+.btn.sm{padding:6px 11px;font-size:13px}.btn.ghost{background:#fff;color:var(--blue);border:1px solid #BFD3F2}
+/* ---------- home ---------- */
+#home{height:100%;overflow:auto;background:linear-gradient(180deg,#fff,#EEF3F9)}
+.hwrap{max-width:1100px;margin:0 auto;padding:34px 24px 60px}
+.hhead{display:flex;gap:18px;align-items:center;margin-bottom:8px}
+.hlogo{width:58px;height:58px;border-radius:14px;background:linear-gradient(135deg,#F57C00,#FFB300);display:grid;place-items:center;font-size:30px;color:#fff;box-shadow:0 6px 16px rgba(245,124,0,.3)}
+.hhead h1{margin:0;font-size:30px;letter-spacing:-.5px}.hhead p{margin:2px 0 0;color:var(--ink2);font-weight:600}
+.hintro{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0 26px}
+.hi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:14.5px;line-height:1.5}.hi b{display:block;font-size:15.5px;margin-bottom:3px}
+.part{margin-bottom:22px}.phd{display:flex;gap:14px;align-items:center;margin-bottom:10px}
+.pn{background:#1F2933;color:#fff;font-weight:800;border-radius:8px;padding:6px 12px;font-size:14px;white-space:nowrap}.phd h3{margin:0;font-size:20px}.phd p{margin:2px 0 0;color:var(--ink2);font-size:14px;font-weight:600}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.excard{display:flex;gap:14px;align-items:center;text-align:left;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;transition:all .15s;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+.excard:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 8px 20px rgba(30,111,217,.12)}
+.excard.done{border-color:#9BD3A8;background:#F4FBF5}
+.eic{flex:none;width:56px;height:56px;border-radius:12px;background:#FFF3E0;display:grid;place-items:center;font-size:28px}
+.etx b{display:block;font-size:17px}.etx span{display:block;color:var(--ink2);font-size:14px;margin-top:2px}.etx em{display:inline-block;font-style:normal;font-weight:800;font-size:12.5px;color:var(--blue);margin-top:6px}
+.hnote{background:#FFF8E1;border:1px solid #FFE082;border-radius:12px;padding:14px 16px;font-size:14px;line-height:1.55;margin-top:20px}
+/* ---------- app ---------- */
+#app{height:100%;display:flex;flex-direction:column}
+.tkbar{height:54px;flex:none;display:flex;align-items:center;gap:8px;padding:0 12px;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 3px rgba(0,0,0,.05);z-index:5}
+.tkbar .ttl{font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tkbar .ttl span{color:var(--ink3)}
+.tool{width:36px;height:36px;border:1px solid transparent;border-radius:6px;background:none;font-size:17px;color:var(--ink2)}.tool:hover{background:#EEF1F5;border-color:var(--line)}
+.sep{width:1px;height:28px;background:var(--line);margin:0 4px}
+.tkbar .sp{flex:1}
+#bCode{background:#fff;color:var(--ink);border:1px solid var(--line)}#bCode:hover{background:#F3F5F8}
+#bSim{background:var(--green)}#bSim:hover{background:var(--green2)}#bSim.stop{background:var(--red)}
+.main{flex:1;display:flex;min-height:0}
+/* guida */
+#guide{width:340px;flex:none;background:#fff;border-right:1px solid var(--line);overflow:auto;padding:14px 14px 40px;font-size:14.5px;line-height:1.5}
+.gtop{display:flex;gap:12px;align-items:center}.gnum{width:46px;height:46px;border-radius:12px;background:#FFF3E0;display:grid;place-items:center;font-size:24px;flex:none}
+.gpart{font-size:12px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px}.gtop h2{margin:0;font-size:19px;line-height:1.2}
+.gbar{height:6px;background:#E8ECF1;border-radius:4px;margin:12px 0 4px;overflow:hidden}.gbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#43A047,#2E7D32);transition:width .4s}
+.gcount{font-size:12px;font-weight:700;color:var(--ink3);margin-bottom:8px}
+.gsec{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:#FAFBFC}
+.gsec summary{cursor:pointer;padding:9px 12px;font-weight:800}.gsec[open] summary{border-bottom:1px solid var(--line)}
+.gsec>div,.gsec>table{margin:10px 12px}
+.glearn ul{margin:4px 0 0;padding-left:18px}
+.bcard{background:#fff;border:1px solid #E3E8EE;border-left:4px solid var(--orange);border-radius:8px;padding:9px 11px;margin:8px 12px}.bcard>b:first-child{display:block;margin-bottom:2px}
+table.mt{border-collapse:collapse;width:calc(100% - 24px);font-size:13px}table.mt th,table.mt td{border:1px solid #D5DBE3;padding:5px 6px;text-align:left;vertical-align:top}table.mt th{background:#EEF1F5}
+.gsec.pins{padding:9px 12px}.ph{font-weight:800;margin-bottom:4px}.gsec.pins ul{margin:0;padding-left:0;list-style:none}.gsec.pins li{margin:3px 0;font-size:13.5px}
+.dotc{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;border:1px solid rgba(0,0,0,.25)}.pnote{font-size:12px;color:var(--ink3);font-weight:600;margin-top:4px}
+.step{border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:#fff;transition:box-shadow .2s,border-color .2s}
+.step.cur{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,111,217,.12)}
+.step.done{border-color:#A5D6A7;background:#F6FBF6}
+.step.flash{animation:fl .9s}@keyframes fl{0%{box-shadow:0 0 0 0 rgba(67,160,71,.6)}100%{box-shadow:0 0 0 14px rgba(67,160,71,0)}}
+.shd{display:flex;gap:10px;align-items:center;padding:9px 11px;cursor:pointer}
+.sn{flex:none;width:26px;height:26px;border-radius:50%;background:#E8ECF1;color:var(--ink2);font-weight:800;font-size:13px;display:grid;place-items:center}
+.step.cur .sn{background:var(--blue);color:#fff}.step.done .sn{background:#43A047;color:#fff}
+.stt{flex:1;font-weight:700;line-height:1.3}.sok{color:#43A047;font-weight:900;opacity:0}.step.done .sok{opacity:1}
+.sbd{display:none;padding:0 12px 12px 47px}.step.open .sbd{display:block}
+.smsg{margin-top:8px;font-size:13.5px;border-radius:8px;padding:7px 9px}.smsg:empty{display:none}.smsg.no{background:#FFF4E5;color:#7A4A00}.smsg.ok{background:#E8F5E9;color:#1B5E20}
+.sbtn{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.sbtn button{border:1px solid #CFD8E3;background:#fff;border-radius:16px;padding:4px 10px;font-size:12.5px;font-weight:700;color:var(--ink2)}.sbtn button:hover{border-color:var(--blue);color:var(--blue)}
+.xhint,.xwhy,.xshow{margin-top:8px;border-radius:8px;padding:8px 10px;font-size:13.5px}.xhint{background:#FFFDE7;border:1px solid #FFF59D}.xwhy{background:#E3F2FD;border:1px solid #BBDEFB}.xshow{background:#F3E5F5;border:1px solid #E1BEE7}
+pre.mini{background:var(--code);color:#D4D4D4;font:500 11.5px/1.5 var(--mono);padding:8px;border-radius:6px;overflow:auto;max-height:260px;white-space:pre}
+.qbox{border:2px solid #1E6FD9;border-radius:12px;padding:12px;margin-top:12px;background:#F5F9FF}.qh{font-weight:800;color:var(--blue);margin-bottom:4px}.qq{font-weight:700;margin-bottom:8px}
+.qo{display:grid;gap:6px}.qo button{text-align:left;border:1px solid #CFD8E3;background:#fff;border-radius:8px;padding:8px 10px;font-size:13.5px;font-weight:600;color:var(--ink)}.qo button.ok{background:#E8F5E9;border-color:#81C784}.qo button.no{background:#FFEBEE;border-color:#E57373}
+.qw{margin-top:8px;background:#fff;border-radius:8px;padding:8px 10px;font-size:13.5px}.done{background:#E8F5E9;border-radius:8px;padding:8px 10px;margin:10px 0}
+/* area di lavoro */
+#stage{flex:1;position:relative;min-width:0;background:#E9ECF0}
+#ws{width:100%;height:100%;display:block;cursor:default;background-color:#EBEEF2;background-image:radial-gradient(#C9D0D9 1px,transparent 1px);background-size:20px 20px}
+#ws.panning{cursor:grabbing}
+#g-temp{pointer-events:none}.cp{cursor:crosshair}.hole.hl{fill:#2E9E44!important}
+.comp .body{cursor:move}.comp.sel>rect.body{stroke:#1E6FD9;stroke-width:1.5;stroke-dasharray:4 3}
+body.simon .comp .btnbody{cursor:pointer}body.simon .cp{cursor:default}
+.wire{cursor:pointer}.wire.sel .wpath{stroke-width:6}.wire .whit:hover+*{opacity:.8}
+#simtime{position:absolute;left:12px;top:10px;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:6px;padding:5px 10px;font:700 13px var(--mono);color:var(--ink2)}
+.zoom{position:absolute;left:12px;bottom:12px;display:flex;flex-direction:column;gap:4px}.zoom button{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:6px;font-weight:800;font-size:16px;color:var(--ink2)}
+#insp{position:absolute;right:12px;top:10px;width:250px;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.12);padding:10px 12px;font-size:13.5px}
+#insp .ih{display:flex;justify-content:space-between;gap:8px;margin-bottom:8px;border-bottom:1px solid var(--line);padding-bottom:6px}#insp .ih span{color:var(--ink3);font-size:12px;text-align:right}
+#insp label{display:block;font-weight:700;margin:6px 0 4px;color:var(--ink2)}#insp select,#insp input{width:100%;font:600 13.5px var(--sans);border:1px solid var(--line);border-radius:6px;padding:6px}
+#insp .irow{display:flex;gap:6px}#insp .irow input{flex:1}#insp .irow select{width:70px}
+.ihint{font-size:12px;color:var(--ink3);margin-top:4px}.ibtns{display:flex;gap:6px;margin-top:10px}.ibtns button{flex:1;border:1px solid var(--line);background:#fff;border-radius:6px;padding:6px;font-weight:700;font-size:12.5px}
+.swatch{display:flex;flex-wrap:wrap;gap:6px}.swatch button{width:24px;height:24px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #AAB4C0}.swatch button.on{box-shadow:0 0 0 2px #1E6FD9}
+.banner{position:absolute;left:50%;top:10px;transform:translateX(-50%);max-width:60%;background:#FFEBEE;border:1px solid #EF9A9A;color:#B71C1C;border-radius:8px;padding:8px 12px;font-weight:700;font-size:13.5px}
+.banner.warn{background:#FFF8E1;border-color:#FFE082;color:#7A4A00}
+/* pannello destro */
+#side{width:400px;flex:none;background:#fff;border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.stabs{display:flex;border-bottom:1px solid var(--line)}.stabs button{flex:1;border:0;background:#F7F8FA;padding:11px;font-weight:800;font-size:14px;color:var(--ink2);border-bottom:3px solid transparent}.stabs button.on{background:#fff;color:var(--ink);border-bottom-color:var(--orange)}
+#palette{padding:14px;overflow:auto}
+.pal{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px;background:#fff;cursor:grab;user-select:none;touch-action:none}
+.pal:hover{border-color:var(--blue);background:#F5F9FF}.pal svg{width:52px;height:46px;flex:none}.pal b{display:block}.pal span{font-size:12.5px;color:var(--ink2)}
+.pnote2{font-size:12.5px;color:var(--ink3);line-height:1.5;margin-top:10px}
+.keys{font-size:12.5px;color:var(--ink2);line-height:1.8;margin-top:12px;border-top:1px solid var(--line);padding-top:10px}.keys kbd{font-family:var(--mono);background:#F3F5F8;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;font-size:11.5px}
+#codep{flex:1;display:flex;flex-direction:column;min-height:0}
+.chd{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);font-size:13px;color:var(--ink2);font-weight:700}
+.chd select{font:700 13px var(--sans);border:1px solid var(--line);border-radius:5px;padding:4px}
+.ed{position:relative;flex:1;min-height:200px;display:flex;background:var(--code)}
+.ed .gut{flex:none;width:40px;padding:10px 8px 10px 0;text-align:right;font:500 13px/1.55 var(--mono);color:#6E7681;background:#1E1E1E;white-space:pre;overflow:hidden;user-select:none}
+.ed .area{position:relative;flex:1;min-width:0}
+.ed pre,.ed textarea{position:absolute;inset:0;margin:0;padding:10px 12px;font:500 13px/1.55 var(--mono);white-space:pre;overflow:auto;tab-size:2;border:0}
+.ed pre{color:#D4D4D4;pointer-events:none}.ed textarea{background:transparent;color:transparent;caret-color:#fff;resize:none;outline:none}
+.ed textarea::selection{background:#264F78;color:transparent}
+.k{color:#569CD6}.c{color:#4FC1FF}.f{color:#DCDCAA}.n{color:#B5CEA8}.cm{color:#6A9955}.s{color:#CE9178}
+.ed .errl{background:rgba(211,47,47,.4);display:inline-block;width:100%}.ed .exl{background:rgba(255,213,0,.2);display:inline-block;width:100%}
+#cerr{background:#FFEBEE;color:#B71C1C;font-size:13px;padding:8px 10px;border-top:1px solid #EF9A9A}
+.monh{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-top:1px solid var(--line);background:#F7F8FA;font-weight:800;font-size:13px}
+.monh button{border:1px solid var(--line);background:#fff;border-radius:5px;padding:3px 8px;font-weight:700;font-size:12px}
+#mon{height:150px;overflow:auto;margin:0;padding:8px 10px;font:500 12.5px/1.45 var(--mono);background:#fff;white-space:pre-wrap;border-top:1px solid var(--line)}
+/* varie */
+#tip{position:fixed;z-index:50;background:#1F2933;color:#fff;font-size:12.5px;font-weight:600;padding:5px 9px;border-radius:5px;pointer-events:none;max-width:280px}
+#ghost{position:fixed;z-index:60;background:#fff;border:1px solid var(--blue);border-radius:6px;padding:5px 9px;font-weight:700;font-size:13px;pointer-events:none;box-shadow:0 6px 16px rgba(0,0,0,.15)}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:70}
+#tour{position:fixed;inset:0;z-index:80}#tourHL{position:fixed;border-radius:10px;box-shadow:0 0 0 9999px rgba(15,23,42,.55);border:3px solid #FFB300;transition:all .3s;pointer-events:none}
+#tourBox{position:fixed;width:320px;background:#fff;border-radius:12px;padding:14px;box-shadow:0 12px 30px rgba(0,0,0,.3);font-size:14.5px;line-height:1.5}
+#tourBox .tb{display:flex;gap:8px;align-items:center;margin-top:10px}#tourBox .tb span{flex:1;font-weight:800;color:var(--ink3);font-size:12.5px}
+@media (max-width:1250px){#guide{width:310px}#side{width:360px}}
+</style>
+</head>
+<body>
+<!-- HOME -->
+<div id="home">
+ <div class="hwrap">
+  <div class="hhead"><div class="hlogo">⚡</div><div><h1>Laboratorio Circuiti · Esercizi guidati</h1><p>Arduino e Tinkercad – Pulsante e if · 6 esercizi per prepararti al compito pratico</p></div></div>
+  <div class="hintro">
+   <div class="hi"><b>🔌 Come in Tinkercad</b>Arduino Uno R3 e breadboard sono già sul banco. Trascini i componenti, fai i fili, scrivi il codice e avvii la simulazione.</div>
+   <div class="hi"><b>🧭 Guidato passo passo</b>Prima ti spiego, poi fai tu. Ogni passo si spunta da solo quando è giusto. Se ti blocchi: 💡 suggerimento, 🤔 perché, 🛟 mostrami come.</div>
+   <div class="hi"><b>🎯 Pronto per il compito</b>Gli esercizi sono diversi dal compito ma allenano le stesse cose: circuito, pin, codice commentato, monitor seriale e domande.</div>
+  </div>
+  <div id="parts"></div>
+  <div class="hnote">💡 <b>Consiglio:</b> fai gli esercizi in ordine. I primi sono molto guidati, gli ultimi ti lasciano più libertà, proprio come nel compito. I tuoi progressi restano salvati su questo computer.</div>
+ </div>
+</div>
+<!-- APP -->
+<div id="app" hidden>
+ <header class="tkbar">
+  <button class="btn ghost sm" id="bHome">☰ Esercizi</button><button class="btn ghost sm" id="bGuide" title="Mostra/nascondi la guida">📖 Guida</button>
+  <div class="ttl" id="ttl"></div>
+  <div class="sep"></div>
+  <button class="tool" id="bRot" title="Ruota (R)">⟳</button><button class="tool" id="bDel" title="Elimina (Canc)">🗑</button><button class="tool" id="bUndo" title="Annulla (Ctrl+Z)">↶</button>
+  <div class="sp"></div>
+  <button class="btn ghost sm" id="bTour" title="Come si usa">❔ Come si usa</button>
+  <button class="btn" id="bCode">📝 Codice</button>
+  <button class="btn" id="bSim">▶ Avvia simulazione</button>
+ </header>
+ <div class="main">
+  <aside id="guide"></aside>
+  <div id="stage">
+   <svg id="ws"><defs><filter id="glow" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="7"/></filter></defs><g id="world"><g id="g-bb"></g><g id="g-ard"></g><g id="g-comps"></g><g id="g-wires"></g><g id="g-temp"></g></g></svg>
+   <div id="simtime" hidden></div>
+   <div id="insp" hidden></div>
+   <div id="banner" class="banner" hidden></div>
+   <div class="zoom"><button id="zIn" title="Zoom avanti">+</button><button id="zOut" title="Zoom indietro">−</button><button id="zFit" title="Adatta alla vista">⤢</button></div>
+  </div>
+  <aside id="side">
+   <div class="stabs"><button id="tComp" class="on">🧩 Componenti</button><button id="tCode">📝 Codice</button></div>
+   <div id="palette">
+    <div class="pal" data-t="led"><svg viewBox="0 0 52 46"><path d="M20 40 V30 M30 40 V32 L27 28" stroke="#9BA3AE" stroke-width="2.5" fill="none"/><path d="M16 28 V14 A9 9 0 0 1 34 14 V28Z" fill="#F23A3A"/><rect x="14" y="26" width="22" height="4" fill="#C62828"/></svg><div><b>LED</b><span>Si accende quando passa corrente. Ha + (piegata) e − (dritta).</span></div></div>
+    <div class="pal" data-t="res"><svg viewBox="0 0 52 46"><line x1="2" y1="23" x2="50" y2="23" stroke="#9BA3AE" stroke-width="2.5"/><rect x="12" y="16" width="28" height="14" rx="6" fill="#E3C79A" stroke="#A88A5A"/><rect x="17" y="16" width="3" height="14" fill="#E00"/><rect x="23" y="16" width="3" height="14" fill="#E00"/><rect x="29" y="16" width="3" height="14" fill="#8B4513"/></svg><div><b>Resistenza</b><span>Frena la corrente. 220 Ω per i LED, 10 kΩ per la pull-down.</span></div></div>
+    <div class="pal" data-t="btn"><svg viewBox="0 0 52 46"><rect x="10" y="7" width="32" height="32" rx="3" fill="#2D3038"/><circle cx="26" cy="23" r="9" fill="#D8343E"/><circle cx="10" cy="7" r="2.5" fill="#9BA3AE"/><circle cx="42" cy="7" r="2.5" fill="#9BA3AE"/><circle cx="10" cy="39" r="2.5" fill="#9BA3AE"/><circle cx="42" cy="39" r="2.5" fill="#9BA3AE"/></svg><div><b>Pulsante</b><span>4 gambe in 2 coppie. Va a cavallo della scanalatura.</span></div></div>
+    <div class="pnote2">Trascina un componente sulla breadboard: si aggancia da solo ai fori. <b>Arduino Uno R3</b> e la <b>breadboard</b> sono già sul banco.</div>
+    <div class="keys"><b>Comandi</b><br>🖱 <b>Filo</b>: clic su un pin/foro, poi clic sul punto di arrivo · clic nel vuoto = curva<br><kbd>R</kbd> ruota · <kbd>Canc</kbd> elimina · <kbd>Esc</kbd> annulla il filo · <kbd>Ctrl</kbd>+<kbd>Z</kbd> annulla<br>🖱 trascina lo sfondo per spostare la vista · rotellina = zoom<br>▶ in simulazione: <b>tieni premuto</b> il pulsante con il mouse</div>
+   </div>
+   <div id="codep" hidden>
+    <div class="chd"><select disabled><option>Testo</option></select><span>Scrivi qui lo sketch · Arduino Uno R3</span></div>
+    <div class="ed"><div class="gut" id="gut"></div><div class="area"><pre id="codehl"></pre><textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Codice"></textarea></div></div>
+    <div id="cerr" hidden></div>
+    <div class="monh"><span>🖥 Monitor seriale</span><button id="monClr">Cancella</button></div>
+    <pre id="mon"></pre>
+   </div>
+  </aside>
+ </div>
+</div>
+<div id="tip" hidden></div><div id="ghost" hidden></div><canvas id="fx"></canvas>
+<div id="tour" hidden><div id="tourHL"></div><div id="tourBox"></div></div>
+<script>
+"use strict";
+/* =====================================================
+   MOTORE ARDUINO DIDATTICO (sottoinsieme della lezione)
+   - interprete: int, void setup/loop, if/else, = ==, digitalRead/Write, pinMode, delay, Serial
+   - Runner: tempo reale oppure "al rallentatore" (riga per riga, con variabili)
+   - Hardware: LED sui pin, pulsanti/interruttori con collegamento selezionabile
+   ===================================================== */
+const ARD=(()=>{
+  const E=(line,msg)=>{const e=new Error(msg);e.line=line;return e};
+  const TYPES=['int','long','byte','bool','boolean','float','unsigned','const','void'];
+  function tokenize(src){
+    const T=[];let i=0,line=1;
+    while(i<src.length){const c=src[i];
+      if(c==='\n'){line++;i++;continue}
+      if(/\s/.test(c)){i++;continue}
+      if(c==='/'&&src[i+1]==='/'){while(i<src.length&&src[i]!=='\n')i++;continue}
+      if(c==='/'&&src[i+1]==='*'){i+=2;while(i<src.length&&!(src[i]==='*'&&src[i+1]==='/')){if(src[i]==='\n')line++;i++}i+=2;continue}
+      if(/[0-9]/.test(c)){let j=i;while(j<src.length&&/[0-9]/.test(src[j]))j++;T.push({t:'num',v:+src.slice(i,j),line});i=j;continue}
+      if(/[A-Za-z_]/.test(c)){let j=i;while(j<src.length&&(/[A-Za-z0-9_]/.test(src[j])||(src[j]==='.'&&/[A-Za-z_]/.test(src[j+1]||''))))j++;T.push({t:'id',v:src.slice(i,j),line});i=j;continue}
+      if(c==='"'){let j=i+1;while(j<src.length&&src[j]!=='"'&&src[j]!=='\n')j++;if(src[j]!=='"')throw E(line,'manca la virgoletta di chiusura "');T.push({t:'str',v:src.slice(i+1,j),line});i=j+1;continue}
+      const two=src.substr(i,2);
+      if(['==','!=','<=','>=','&&','||','++','--'].includes(two)){T.push({t:'op',v:two,line});i+=2;continue}
+      if('=<>+-*/%!(){};,'.includes(c)){T.push({t:'op',v:c,line});i++;continue}
+      if(c==='?')throw E(line,'c\'è ancora uno spazio vuoto "?" da completare');
+      throw E(line,`carattere non riconosciuto "${c}"`)}
+    T.push({t:'eof',v:'fine del codice',line});return T;
+  }
+  function parse(T){
+    let p=0;const pk=()=>T[p],nx=()=>T[p++],is=v=>T[p].t==='op'&&T[p].v===v,isw=v=>T[p].t==='id'&&T[p].v===v;
+    const ex=(v,msg)=>{if(!is(v))throw E((T[p].t==='eof'||v===';'||v===')')&&p>0?T[p-1].line:T[p].line,msg||`manca "${v}"`);return nx()};
+    const prog={globals:[],funcs:{}};
+    function skipType(){let ty=nx().v;while(pk().t==='id'&&['int','long','byte'].includes(pk().v))ty=nx().v;return ty}
+    while(pk().t!=='eof'){
+      const t=pk();if(t.t!=='id'||!TYPES.includes(t.v))throw E(t.line,`mi aspettavo una dichiarazione (int …) o una funzione (void …), non "${t.v}"`);
+      skipType();const nm=nx();if(nm.t!=='id')throw E(nm.line,'manca il nome della variabile o della funzione');
+      if(is('(')){nx();ex(')',`manca la parentesi ")" dopo ${nm.v}(`);prog.funcs[nm.v]=block()}
+      else{let init=null;if(is('=')){nx();init=expr()}ex(';',`manca il punto e virgola ";" dopo la dichiarazione di ${nm.v}`);prog.globals.push({k:'decl',name:nm.v,init,line:nm.line})}
+    }
+    return prog;
+    function block(){const o=ex('{','manca la parentesi graffa "{"');const body=[];while(!is('}')){if(pk().t==='eof')throw E(o.line,'manca una parentesi graffa di chiusura "}"');body.push(stmt())}const c=nx();return{k:'block',body,end:c.line}}
+    function stmt(){const t=pk();
+      if(is('{'))return block();
+      if(is(';')){nx();return{k:'empty',line:t.line}}
+      if(isw('if')){nx();ex('(','dopo if ci vuole la parentesi tonda "("');const c=expr();ex(')','manca la parentesi tonda ")" che chiude la condizione dell\'if');const th=stmt();let el=null,elLine=0;if(isw('else')){elLine=pk().line;nx();el=stmt()}return{k:'if',c,th,el,elLine,line:t.line}}
+      if(isw('else'))throw E(t.line,'"else" senza if: controlla di non aver messo il punto e virgola dopo la parentesi dell\'if');
+      if(t.t==='id'&&['while','for','do','switch'].includes(t.v))throw E(t.line,`"${t.v}" non fa parte di questa lezione: usa if / else dentro il loop()`);
+      if(t.t==='id'&&TYPES.includes(t.v)&&t.v!=='void'){skipType();const nm=nx();if(nm.t!=='id')throw E(nm.line,'manca il nome della variabile');let init=null;if(is('=')){nx();init=expr()}ex(';','manca il punto e virgola ";" alla fine della riga');return{k:'decl',name:nm.v,init,line:nm.line}}
+      const e=expr();ex(';','manca il punto e virgola ";" alla fine della riga');return{k:'expr',e,line:t.line}}
+    function expr(){return asg()}
+    function asg(){const l=or();if(is('=')){const t=nx();if(l.k!=='var')throw E(t.line,'a sinistra di "=" ci vuole il nome di una variabile');return{k:'asg',name:l.name,v:asg(),line:t.line}}return l}
+    function or(){let l=and();while(is('||')){nx();l={k:'bin',op:'||',l,r:and()}}return l}
+    function and(){let l=eq();while(is('&&')){nx();l={k:'bin',op:'&&',l,r:eq()}}return l}
+    function eq(){let l=rel();while(is('==')||is('!=')){const op=nx().v;l={k:'bin',op,l,r:rel()}}return l}
+    function rel(){let l=add();while(is('<')||is('>')||is('<=')||is('>=')){const op=nx().v;l={k:'bin',op,l,r:add()}}return l}
+    function add(){let l=mul();while(is('+')||is('-')){const op=nx().v;l={k:'bin',op,l,r:mul()}}return l}
+    function mul(){let l=un();while(is('*')||is('/')||is('%')){const op=nx().v;l={k:'bin',op,l,r:un()}}return l}
+    function un(){if(is('!')){nx();return{k:'not',e:un()}}if(is('-')){nx();return{k:'neg',e:un()}}return post()}
+    function post(){const e=prim();if(is('++')||is('--')){const t=nx();if(e.k!=='var')throw E(t.line,`"${t.v}" si usa dopo una variabile`);return{k:'inc',name:e.name,d:t.v==='++'?1:-1,line:t.line}}return e}
+    function prim(){const t=nx();
+      if(t.t==='num')return{k:'num',v:t.v};if(t.t==='str')return{k:'str',v:t.v};
+      if(t.t==='op'&&t.v==='('){const e=expr();ex(')','manca una parentesi tonda ")"');return e}
+      if(t.t==='id'){if(is('(')){nx();const args=[];if(!is(')')){args.push(expr());while(is(',')){nx();args.push(expr())}}ex(')',`manca la parentesi ")" nella chiamata a ${t.v}`);return{k:'call',name:t.v,args,line:t.line}}return{k:'var',name:t.v,line:t.line}}
+      throw E(t.line,t.t==='eof'?'il codice finisce troppo presto: manca qualcosa':`non mi aspettavo "${t.v}" qui`)}
+  }
+  const CONST={HIGH:1,LOW:0,INPUT:0,OUTPUT:1,INPUT_PULLUP:2,true:1,false:0,LED_BUILTIN:13};
+  const ARGS={pinMode:2,digitalWrite:2,digitalRead:1,delay:1,'Serial.begin':1,'Serial.println':[0,1],'Serial.print':1};
+  function* program(prog,hw){
+    const G={};hw.vars=G;
+    const look=(sc,n)=>{for(let i=sc.length-1;i>=0;i--)if(n in sc[i])return sc[i];return null};
+    function* ex(s,sc){switch(s.k){
+      case'block':{const ns=[...sc,{}];hw.locals=ns;for(const x of s.body)yield* ex(x,ns);return}
+      case'empty':yield{line:s.line,note:'istruzione vuota ";" (non fa niente)'};return;
+      case'decl':yield{line:s.line};sc[sc.length-1][s.name]=s.init?yield* ev(s.init,sc):0;return;
+      case'expr':yield{line:s.line};yield* ev(s.e,sc);return;
+      case'if':{yield{line:s.line};const c=yield* ev(s.c,sc);yield{line:s.line,cond:!!c};if(c)yield* ex(s.th,sc);else if(s.el){yield{line:s.elLine,note:'else'};yield* ex(s.el,sc)}return}}}
+    function* ev(e,sc){switch(e.k){
+      case'num':case'str':return e.v;
+      case'var':{if(e.name in CONST)return CONST[e.name];const s=look(sc,e.name);if(!s)throw E(e.line,`la variabile "${e.name}" non è stata dichiarata`);return s[e.name]}
+      case'asg':{const v=yield* ev(e.v,sc);if(e.name in CONST)return v;const s=look(sc,e.name);if(!s)throw E(e.line,`la variabile "${e.name}" non è stata dichiarata`);s[e.name]=v;return v}
+      case'inc':{const s=look(sc,e.name);if(!s)throw E(e.line,`la variabile "${e.name}" non è stata dichiarata`);const o=s[e.name];s[e.name]=o+e.d;return o}
+      case'not':return (yield* ev(e.e,sc))?0:1;
+      case'neg':return -(yield* ev(e.e,sc));
+      case'bin':{const l=yield* ev(e.l,sc);if(e.op==='&&')return l&&(yield* ev(e.r,sc))?1:0;if(e.op==='||')return(l||(yield* ev(e.r,sc)))?1:0;const r=yield* ev(e.r,sc);
+        switch(e.op){case'==':return l==r?1:0;case'!=':return l!=r?1:0;case'<':return l<r?1:0;case'>':return l>r?1:0;case'<=':return l<=r?1:0;case'>=':return l>=r?1:0;case'+':return l+r;case'-':return l-r;case'*':return l*r;case'/':return r?Math.trunc(l/r):0;case'%':return r?l%r:0}}
+      case'call':{const a=[];for(const x of e.args)a.push(yield* ev(x,sc));
+        if(prog.funcs[e.name]){yield* ex(prog.funcs[e.name],[G]);return 0}
+        const n=ARGS[e.name];if(n===undefined)throw E(e.line,`"${e.name}" non è un'istruzione che conosciamo (controlla maiuscole e minuscole)`);
+        if(Array.isArray(n)?!n.includes(a.length):n!==a.length)throw E(e.line,`${e.name} vuole ${Array.isArray(n)?n.join(' o '):n} valor${(Array.isArray(n)?2:n)===1?'e':'i'} tra parentesi`);
+        if(e.name==='delay'){yield{delay:a[0],line:e.line};return 0}
+        return hw.call(e.name,a,e.line)}}}
+    for(const d of prog.globals)G[d.name]=d.init?yield* ev(d.init,[G]):0;
+    if(!prog.funcs.setup)throw E(1,'manca la funzione void setup()');
+    if(!prog.funcs.loop)throw E(1,'manca la funzione void loop()');
+    yield{phase:'setup'};yield* ex(prog.funcs.setup,[G]);
+    let n=0;while(true){yield{phase:'loop',n:++n};yield* ex(prog.funcs.loop,[G]);yield{tick:1,line:prog.funcs.loop.end}}
+  }
+  function compile(src){return parse(tokenize(src))}
+
+  /* ---------- Hardware simulato ---------- */
+  const WIRING={pulldown:'pull-down 10 kΩ (verso 5 V)',pullup:'verso GND (per INPUT_PULLUP)',floating:'nessuna resistenza (verso 5 V)',rotated:'pulsante ruotato (stessa coppia)'};
+  class HW{
+    constructor(){this.mode={};this.out={};this.btn={};this.serialOn=false;this.sbuf='';this.warns=[];this.warned={};this.noise={}}
+    reset(){this.mode={};this.out={};this.serialOn=false;this.sbuf='';this.warns=[];this.warned={}}
+    noisy(p){const t=performance.now();const n=this.noise[p]||(this.noise[p]={v:0,t:0});if(t-n.t>140){n.v=Math.random()<.5?1:0;n.t=t}return n.v}
+    level(p){const m=this.mode[p];const b=this.btn[p];
+      if(m===undefined||m===1)return null;
+      if(!b)return m===2?1:this.noisy(p);
+      const pr=b.pressed,w=b.wiring;
+      if(w==='rotated')return 1;
+      if(m===2){if(w==='pullup')return pr?0:1;return 1}
+      if(w==='pulldown')return pr?1:0;
+      if(w==='floating')return pr?1:this.noisy(p);
+      if(w==='pullup')return pr?0:this.noisy(p);
+      return 0}
+    warn(k,msg){if(this.warned[k])return;this.warned[k]=1;this.warns.push(msg);this.onWarn&&this.onWarn(msg)}
+    call(name,a,line){
+      if(name==='pinMode'){this.mode[a[0]]=a[1];if(a[1]===1&&this.btn[a[0]])this.warn('pm'+a[0],`riga ${line}: sul pin ${a[0]} c'è un pulsante, ma l'hai messo in OUTPUT. Per ascoltarlo serve INPUT.`);this.onPin&&this.onPin();return 0}
+      if(name==='digitalWrite'){const p=a[0];if(this.mode[p]!==1){this.warn('dw'+p,`riga ${line}: digitalWrite sul pin ${p}, che non è in OUTPUT. Manca pinMode(${p}, OUTPUT) nel setup()?`);return 0}
+        this.out[p]=a[1]?1:0;this.onWrite&&this.onWrite(p,this.out[p]);return 0}
+      if(name==='digitalRead'){const p=a[0];if(this.mode[p]===undefined)this.warn('dr'+p,`riga ${line}: leggi il pin ${p} ma non hai scritto pinMode(${p}, INPUT) nel setup().`);
+        if(this.mode[p]===1)return this.out[p]||0;const v=this.level(p);const r=v===null?this.noisy(p):v;this.lastRead={pin:p,v:r,line};return r}
+      if(name==='Serial.begin'){this.serialOn=true;return 0}
+      if(name==='Serial.println'||name==='Serial.print'){if(!this.serialOn){this.warn('sb',`riga ${line}: per usare il monitor seriale scrivi prima Serial.begin(9600) nel setup().`);return 0}
+        this.sbuf+=(a.length?String(a[0]):'')+(name==='Serial.println'?'\n':'');return 0}
+      return 0}
+  }
+
+  /* ---------- Runner: tempo reale o rallentatore ---------- */
+  class Runner{
+    constructor(src,hw,o){this.src=src;this.hw=hw;this.o=o||{};this.alive=false}
+    start(){
+      let prog;try{prog=compile(this.src)}catch(e){this.o.onError&&this.o.onError(e,true);return false}
+      this.hw.reset();this.gen=program(prog,this.hw);this.alive=true;this.tok={};this.step(this.tok);return true}
+    stop(){this.alive=false;this.tok=null;clearTimeout(this.timer);this.o.onLine&&this.o.onLine(0)}
+    step(tok){
+      if(!this.alive||tok!==this.tok)return;const t0=performance.now();let it=0;const slow=this.o.slow&&this.o.slow();
+      try{
+        while(true){const r=this.gen.next();if(r.done){this.stop();return}const y=r.value;
+          if(y.line&&slow){this.o.onLine&&this.o.onLine(y.line,y);this.o.onFlush&&this.o.onFlush();
+            const wait=y.delay!==undefined?Math.max(y.delay,this.o.stepMs()):this.o.stepMs();
+            if(y.delay!==undefined&&this.o.onDelay)this.o.onDelay(y.delay);
+            this.timer=setTimeout(()=>this.step(tok),wait);return}
+          if(y.phase&&this.o.onPhase)this.o.onPhase(y);
+          if(y.delay!==undefined){this.o.onFlush&&this.o.onFlush();this.o.onLine&&this.o.onLine(y.line,y,true);this.timer=setTimeout(()=>this.step(tok),Math.max(0,y.delay));return}
+          if(y.tick&&(++it>=60||performance.now()-t0>10)){this.o.onFlush&&this.o.onFlush();this.timer=setTimeout(()=>this.step(tok),8);return}
+        }
+      }catch(e){this.alive=false;this.o.onError&&this.o.onError(e,false)}
+    }
+  }
+  return{compile,program,HW,Runner,WIRING,CONST};
+})();
+
+/* =====================================================
+   EDITOR DI CIRCUITI (Arduino Uno R3 + breadboard)
+   modello, disegno, collegamenti, analisi elettrica
+   ===================================================== */
+const P=16, BX=470, BY=96, AX=30, AY=96;
+const NS='http://www.w3.org/2000/svg';
+const LEDC={rosso:'#F23A3A',giallo:'#FFD21F',verde:'#2BD45A',blu:'#3A8BFF',arancione:'#FF8A1F',bianco:'#F4F4F4'};
+/* ---------- pin di Arduino ---------- */
+const PINS=(()=>{const L=[];
+  const top=['SCL','SDA','AREF','GND3','D13','D12','D11','D10','D9','D8',null,'D7','D6','D5','D4','D3','D2','D1','D0'];
+  let x=AX+104;top.forEach(n=>{if(!n){x+=10;return}L.push({n,x,y:AY+20,top:true});x+=14});
+  const bot=['IOREF','RESET','3V3','5V','GND1','GND2','VIN',null,'A0','A1','A2','A3','A4','A5'];
+  x=AX+150;bot.forEach(n=>{if(!n){x+=14;return}L.push({n,x,y:AY+268,top:false});x+=14});return L})();
+const PIN_LABEL=n=>n.startsWith('GND')?'GND':n==='3V3'?'3.3V':n.startsWith('D')?n.slice(1):n;
+const pinNice=n=>n.startsWith('GND')?'GND':n==='3V3'?'3.3V':n.startsWith('D')?'pin '+n.slice(1):n;
+/* ---------- fori della breadboard ---------- */
+const BB_COLS=30, ROWS=[0,1,3,4,5,6,7,9,10,11,12,13,15,16];
+const holeXY=(c,r)=>({x:BX+28+c*P,y:BY+24+r*P});
+const rowName=r=>({0:'+',1:'−',15:'+',16:'−'})[r]||'abcde fghij'[r-3];
+const stripOf=(c,r)=>r<=1||r>=15?'R'+r:(r<=7?'T'+c:'B'+c);
+const HOLES=[];for(let c=0;c<BB_COLS;c++)for(const r of ROWS)HOLES.push({c,r,...holeXY(c,r),k:`H:${c}:${r}`,s:stripOf(c,r)});
+const HOLE_AT=new Map(HOLES.map(h=>[Math.round(h.x)+','+Math.round(h.y),h]));
+/* ---------- geometria dei componenti (in passi) ---------- */
+const GEO={led:[[0,0],[1,0]],res:[[0,0],[4,0]],btn:[[0,0],[2,0],[0,2],[2,2]]};
+const LEGNAME={led:['catodo (−, gamba dritta)','anodo (+, gamba piegata)'],res:['terminale 1','terminale 2'],btn:['terminale 1a','terminale 2a','terminale 1b','terminale 2b']};
+function rot([x,y],r){for(let i=0;i<r;i++)[x,y]=[-y,x];return[x,y]}
+function legsOf(c){return GEO[c.type].map(o=>{const [dx,dy]=rot(o,c.rot);return{x:c.x+dx*P,y:c.y+dy*P}})}
+function holeAt(x,y){return HOLE_AT.get(Math.round(x)+','+Math.round(y))||null}
+/* ---------- stato del circuito ---------- */
+const CIR={comps:[],wires:[],nid:1};
+const fmtR=v=>v>=1000?(v%1000===0?v/1000:(v/1000).toFixed(1).replace('.',','))+' kΩ':v+' Ω';
+function compName(c){const same=CIR.comps.filter(x=>x.type===c.type);const i=same.indexOf(c)+1;return({led:'LED',res:'Resistenza',btn:'Pulsante'})[c.type]+' '+i}
+/* ---------- rete elettrica (union-find) ---------- */
+function buildNets(pressed){
+  const p={};const f=x=>{if(p[x]===undefined)p[x]=x;while(p[x]!==x){p[x]=p[p[x]];x=p[x]}return x};const u=(a,b)=>{a=f(a);b=f(b);if(a!==b)p[a]=b};
+  HOLES.forEach(h=>u(h.k,'S:'+h.s));
+  u('P:GND1','P:GND2');u('P:GND2','P:GND3');
+  CIR.comps.forEach(c=>{legsOf(c).forEach((l,i)=>{const h=holeAt(l.x,l.y);if(h)u(`L:${c.id}:${i}`,h.k);else f(`L:${c.id}:${i}`)});
+    if(c.type==='btn'){u(`L:${c.id}:0`,`L:${c.id}:1`);u(`L:${c.id}:2`,`L:${c.id}:3`);if(pressed&&pressed[c.id])u(`L:${c.id}:0`,`L:${c.id}:2`)}});
+  CIR.wires.forEach(w=>u(w.a,w.b));
+  PINS.forEach(pn=>f('P:'+pn.n));
+  return f;
+}
+/* sorgenti: 5V/3.3V = H, GND = L, pin OUTPUT = H/L */
+function evalCircuit(f,modes,outs){
+  const st={};const mark=(k,v)=>{const n=f(k);st[n]=(st[n]||'')+(st[n]&&st[n].includes(v)?'':v)};
+  mark('P:5V','H');mark('P:3V3','H');mark('P:GND1','L');
+  for(const p in modes)if(modes[p]===1)mark('P:D'+p,outs[p]?'H':'L');
+  const shorts=Object.entries(st).filter(([n,v])=>v.includes('H')&&v.includes('L')).map(([n])=>n);
+  const edges={};CIR.comps.filter(c=>c.type==='res').forEach(c=>{const a=f(`L:${c.id}:0`),b=f(`L:${c.id}:1`);if(a===b)return;(edges[a]=edges[a]||[]).push([b,c.value]);(edges[b]=edges[b]||[]).push([a,c.value])});
+  const dist=(start,want)=>{const d={[start]:0},q=[[0,start]];while(q.length){q.sort((x,y)=>x[0]-y[0]);const [dd,n]=q.shift();if(dd>d[n])continue;if((st[n]||'').includes(want))return dd;for(const [m,r] of edges[n]||[]){const nd=dd+r;if(d[m]===undefined||nd<d[m]){d[m]=nd;q.push([nd,m])}}}return Infinity};
+  const leds={},burn=[];
+  CIR.comps.filter(c=>c.type==='led').forEach(c=>{const A=f(`L:${c.id}:1`),K=f(`L:${c.id}:0`);const da=dist(A,'H'),dk=dist(K,'L');const R=da+dk;
+    let b=0;if(isFinite(R)&&A!==K){b=R<=2000?1:R<=15000?.35:0;if(R===0)burn.push(c.id)}leds[c.id]=b});
+  const level=(pin,mode)=>{const n=f('P:D'+pin);const s=st[n]||'';if(s.includes('H')&&s.includes('L'))return 1;if(s.includes('H'))return 1;if(s.includes('L'))return 0;
+    const dh=dist(n,'H'),dl=dist(n,'L');if(isFinite(dh)||isFinite(dl))return dh<dl?1:0;if(mode===2)return 1;return null};
+  return{leds,burn,shorts,level};
+}
+/* ---------- analisi del circuito per le verifiche ---------- */
+function analyze(){
+  const f=buildNets({});const pinsIn=n=>PINS.filter(p=>p.n.startsWith('D')&&f('P:'+p.n)===n).map(p=>+p.n.slice(1));
+  const has=(n,k)=>f(k)===n;const isGND=n=>has(n,'P:GND1'),is5V=n=>has(n,'P:5V');
+  const res=CIR.comps.filter(c=>c.type==='res').map(c=>({c,a:f(`L:${c.id}:0`),b:f(`L:${c.id}:1`)}));
+  const viaRes=n=>res.filter(r=>r.a===n||r.b===n).map(r=>({r,other:r.a===n?r.b:r.a}));
+  const legsIn=c=>legsOf(c).map(l=>!!holeAt(l.x,l.y));
+  const leds=CIR.comps.filter(c=>c.type==='led').map(c=>{const A=f(`L:${c.id}:1`),K=f(`L:${c.id}:0`);
+    const o={id:c.id,c,color:c.color,name:compName(c),inBoard:legsIn(c).every(Boolean),same:A===K,pin:null,res:null,gnd:false,reversed:false,direct5V:false};
+    let pa=pinsIn(A);if(pa.length)o.pin=pa[0];else viaRes(A).forEach(v=>{const pp=pinsIn(v.other);if(pp.length&&o.pin===null){o.pin=pp[0];o.res=v.r.c.value}});
+    if(is5V(A))o.direct5V=true;
+    if(isGND(K))o.gnd=true;else viaRes(K).forEach(v=>{if(isGND(v.other)){o.gnd=true;o.res=v.r.c.value}});
+    const pk=pinsIn(K);if(!o.pin&&pk.length&&(isGND(A)||viaRes(A).some(v=>isGND(v.other))))o.reversed=true;
+    if(!o.pin&&pk.length){o.reversed=true}
+    return o});
+  const btns=CIR.comps.filter(c=>c.type==='btn').map(c=>{const NA=f(`L:${c.id}:0`),NB=f(`L:${c.id}:2`);const o={id:c.id,c,name:compName(c),inBoard:legsIn(c).every(Boolean),pin:null,to5V:false,pull:null,pullup:false,rotated:false,floating:false};
+    for(const [X,Y] of [[NA,NB],[NB,NA]]){const px=pinsIn(X);if(px.length){o.pin=px[0];
+        if(is5V(X))o.rotated=true;
+        if(is5V(Y))o.to5V=true;
+        if(isGND(Y))o.pullup=true;
+        viaRes(X).forEach(v=>{if(isGND(v.other))o.pull=v.r.c.value});
+        if(!o.pull&&!o.rotated&&o.to5V)o.floating=true;break}}
+    if(o.pin===null){const pa=pinsIn(NA).concat(pinsIn(NB));if(pa.length)o.pin=pa[0]}
+    return o});
+  const rails={plus:[0,15].some(r=>is5V(f(`H:0:${r}`))),minus:[1,16].some(r=>isGND(f(`H:0:${r}`)))};
+  const st=evalCircuit(f,{},{});
+  return{leds,btns,rails,shorts:st.shorts.length>0,f};
+}
+/* ---------- colori delle bande della resistenza ---------- */
+function bands(v){const C=['#000','#8B4513','#E00','#F80','#EE0','#0A0','#00E','#80F','#888','#FFF'];let e=0,x=v;while(x>=100){x/=10;e++}x=Math.round(x);const d1=Math.floor(x/10),d2=x%10;return[C[d1],C[d2],C[e],'#C9A227']}
+
+/* =====================================================
+   DISEGNO E INTERAZIONE DELL'AREA DI LAVORO
+   ===================================================== */
+const ED={sel:null,wiring:null,drag:null,pan:null,view:{x:0,y:0,z:1},hist:[],sim:false,pressed:{},bright:{},onChange:()=>{}};
+const svg=document.getElementById('ws'),world=document.getElementById('world');
+const gA=document.getElementById('g-ard'),gB=document.getElementById('g-bb'),gC=document.getElementById('g-comps'),gW=document.getElementById('g-wires'),gT=document.getElementById('g-temp');
+const el=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e};
+function toWorld(ev){const p=svg.createSVGPoint();p.x=ev.clientX;p.y=ev.clientY;return p.matrixTransform(world.getScreenCTM().inverse())}
+function applyView(){world.setAttribute('transform',`translate(${ED.view.x} ${ED.view.y}) scale(${ED.view.z})`)}
+function fitView(){const r=svg.getBoundingClientRect();const W=1000,H=390;const z=Math.min(r.width/W,r.height/H)*.97;ED.view={z,x:(r.width-W*z)/2-5*z,y:(r.height-H*z)/2-50*z};applyView()}
+/* ---------- Arduino ---------- */
+function drawArduino(){
+  gA.innerHTML='';const g=gA;
+  el('rect',{x:AX,y:AY,width:390,height:290,rx:12,fill:'#127B8A',stroke:'#0B5C67','stroke-width':3},g);
+  for(const [x,y] of [[AX+14,AY+14],[AX+376,AY+14],[AX+14,AY+276],[AX+376,AY+276]])el('circle',{cx:x,cy:y,r:6,fill:'#E6E6E6',stroke:'#0B5C67'},g);
+  el('rect',{x:AX-16,y:AY+46,width:58,height:50,rx:3,fill:'#C9CED6',stroke:'#8D96A3','stroke-width':2},g);
+  el('rect',{x:AX-12,y:AY+196,width:50,height:58,rx:4,fill:'#1D1F24'},g);
+  el('rect',{x:AX+190,y:AY+192,width:160,height:34,rx:3,fill:'#1C1D22'},g);
+  for(let i=0;i<14;i++){el('rect',{x:AX+195+i*11,y:AY+186,width:5,height:6,fill:'#BFC4CC'},g);el('rect',{x:AX+195+i*11,y:AY+226,width:5,height:6,fill:'#BFC4CC'},g)}
+  el('rect',{x:AX+60,y:AY+110,width:22,height:22,rx:3,fill:'#D9D9D9',stroke:'#8D96A3'},g);el('circle',{cx:AX+71,cy:AY+121,r:6,fill:'#C0392B'},g);
+  const t=(x,y,s,o={})=>{const e=el('text',{x,y,fill:'#fff','font-family':'Arial','font-weight':700,'font-size':o.s||11,'text-anchor':o.a||'middle',...(o.r?{transform:`rotate(-90 ${x} ${y})`}:{})},g);e.textContent=s;return e};
+  t(AX+250,AY+130,'UNO',{s:30});t(AX+250,AY+160,'ARDUINO',{s:13});t(AX+71,AY+148,'RESET',{s:8});
+  /* LED di bordo */
+  el('rect',{x:AX+110,y:AY+64,width:9,height:6,fill:'#5a3',id:'ledL'},g);t(AX+128,AY+70,'L',{s:9,a:'start'});
+  el('rect',{x:AX+110,y:AY+80,width:9,height:6,fill:'#2ecc71'},g);t(AX+128,AY+86,'ON',{s:9,a:'start'});
+  el('rect',{x:AX+110,y:AY+96,width:9,height:6,fill:'#665',id:'ledTX'},g);t(AX+128,AY+102,'TX',{s:9,a:'start'});
+  /* connettori */
+  const tops=PINS.filter(p=>p.top),bots=PINS.filter(p=>!p.top);
+  el('rect',{x:tops[0].x-8,y:AY+12,width:tops[9].x-tops[0].x+16,height:16,fill:'#202226',rx:2},g);el('rect',{x:tops[10].x-8,y:AY+12,width:tops[17].x-tops[10].x+16,height:16,fill:'#202226',rx:2},g);
+  el('rect',{x:bots[0].x-8,y:AY+260,width:bots[6].x-bots[0].x+16,height:16,fill:'#202226',rx:2},g);el('rect',{x:bots[7].x-8,y:AY+260,width:bots[12].x-bots[7].x+16,height:16,fill:'#202226',rx:2},g);
+  t((tops[10].x+tops[17].x)/2,AY+64,'DIGITAL (PWM~)',{s:9});t((bots[0].x+bots[6].x)/2,AY+218,'POWER',{s:9});t((bots[7].x+bots[12].x)/2,AY+218,'ANALOG IN',{s:9});
+  PINS.forEach(p=>{el('rect',{x:p.x-3.5,y:p.y-3.5,width:7,height:7,fill:'#0A0A0A'},g);
+    t(p.x+3,p.top?AY+34:AY+254,PIN_LABEL(p.n),{s:8,r:true,a:p.top?'end':'start'});
+    const c=el('circle',{cx:p.x,cy:p.y,r:6,class:'cp pinpt','data-k':'P:'+p.n,fill:'transparent'},g)});
+}
+/* ---------- Breadboard ---------- */
+const holeEls={};
+function drawBreadboard(){
+  gB.innerHTML='';const g=gB,W=BB_COLS*P+40,H=16*P+48;
+  el('rect',{x:BX,y:BY,width:W,height:H,rx:8,fill:'#ECEEF0',stroke:'#C8CDD3','stroke-width':2},g);
+  el('rect',{x:BX+6,y:BY+24+7.5*P-5,width:W-12,height:10,fill:'#D9DDE2',rx:3},g);
+  const ln=(y,c)=>el('line',{x1:BX+18,x2:BX+W-18,y1:y,y2:y,stroke:c,'stroke-width':1.5},g);
+  ln(BY+24-9,'#D33');ln(BY+24+P+9,'#36C');ln(BY+24+15*P-9,'#D33');ln(BY+24+16*P+9,'#36C');
+  const t=(x,y,s,c='#7A8494',sz=8)=>{const e=el('text',{x,y,fill:c,'font-family':'Arial','font-size':sz,'text-anchor':'middle','font-weight':700},g);e.textContent=s};
+  [0,15].forEach(r=>{t(BX+10,BY+24+r*P+3,'+','#D33',11);t(BX+W-10,BY+24+r*P+3,'+','#D33',11)});[1,16].forEach(r=>{t(BX+10,BY+24+r*P+3,'−','#36C',11);t(BX+W-10,BY+24+r*P+3,'−','#36C',11)});
+  for(let r=3;r<=13;r++)if(r!==8){t(BX+12,BY+24+r*P+3,rowName(r));t(BX+W-12,BY+24+r*P+3,rowName(r))}
+  for(let c=0;c<BB_COLS;c++)if(c%5===0||c===BB_COLS-1){t(BX+28+c*P,BY+24+2*P+3,c+1);t(BX+28+c*P,BY+24+14*P+3,c+1)}
+  HOLES.forEach(h=>{el('rect',{x:h.x-3,y:h.y-3,width:6,height:6,rx:1,fill:'#5D646E',class:'hole','data-s':h.s},g);
+    const c=el('circle',{cx:h.x,cy:h.y,r:7,class:'cp holept','data-k':h.k,'data-s':h.s,fill:'transparent'},g);(holeEls[h.s]=holeEls[h.s]||[]).push(c.previousSibling)});
+}
+/* ---------- componenti ---------- */
+function drawComp(c){
+  const g=el('g',{class:'comp'+(ED.sel&&ED.sel.id===c.id?' sel':''),'data-id':c.id,transform:`translate(${c.x} ${c.y}) rotate(${c.rot*90})`},gC);
+  if(c.type==='led'){const col=LEDC[c.color]||'#F23A3A',b=ED.bright[c.id]||0;
+    el('path',{d:`M0 0 V-14`,stroke:'#9BA3AE','stroke-width':2.5,fill:'none'},g);el('path',{d:`M${P} 0 V-8 L${P-4} -14`,stroke:'#9BA3AE','stroke-width':2.5,fill:'none'},g);
+    if(b)el('circle',{cx:P/2,cy:-30,r:24,fill:col,opacity:.35*b,filter:'url(#glow)'},g);
+    el('rect',{x:-4,y:-18,width:P+8,height:5,rx:1.5,fill:col,stroke:'rgba(0,0,0,.35)'},g);
+    el('path',{d:`M-1 -18 V-30 A${P/2+1} ${P/2+1} 0 0 1 ${P+1} -30 V-18Z`,fill:col,stroke:'rgba(0,0,0,.35)','stroke-width':1,opacity:b?1:.78},g);
+    el('ellipse',{cx:P/2-3,cy:-31,rx:2.5,ry:5,fill:'#fff',opacity:.6},g);
+    if(b)el('circle',{cx:P/2,cy:-27,r:6,fill:'#fff',opacity:.7*b},g);
+    el('rect',{x:-6,y:-44,width:P+12,height:46,fill:'transparent',class:'body'},g);
+  }else if(c.type==='res'){const L=4*P,bd=bands(c.value);
+    el('line',{x1:0,y1:0,x2:L,y2:0,stroke:'#9BA3AE','stroke-width':2.5},g);
+    el('rect',{x:14,y:-7,width:L-28,height:14,rx:6,fill:'#E3C79A',stroke:'#A88A5A'},g);
+    bd.forEach((col,i)=>el('rect',{x:20+i*7+(i===3?5:0),y:-7,width:4,height:14,fill:col},g));
+    el('rect',{x:8,y:-10,width:L-16,height:20,fill:'transparent',class:'body'},g);
+  }else if(c.type==='btn'){const pr=ED.pressed[c.id];
+    [[0,0],[2*P,0],[0,2*P],[2*P,2*P]].forEach(([x,y])=>el('circle',{cx:x,cy:y,r:3,fill:'#9BA3AE'},g));
+    el('rect',{x:-3,y:-3,width:2*P+6,height:2*P+6,rx:3,fill:'#2D3038',stroke:'#16181D'},g);
+    el('rect',{x:2,y:2,width:2*P-4,height:2*P-4,rx:2,fill:'#3A3E48'},g);
+    el('circle',{cx:P,cy:P,r:pr?8:10,fill:pr?'#A9262E':'#D8343E',stroke:'#7E1A20','stroke-width':1.5},g);
+    el('rect',{x:-6,y:-6,width:2*P+12,height:2*P+12,fill:'transparent',class:'body btnbody'},g);
+  }
+  legsOf(c).forEach((l,i)=>{const inH=holeAt(l.x,l.y);const [dx,dy]=rot(GEO[c.type][i],0);
+    const lx=GEO[c.type][i][0]*P,ly=GEO[c.type][i][1]*P;
+    el('circle',{cx:lx,cy:ly,r:inH?2.5:3.5,fill:inH?'#2B2F36':'#E04848',class:'legdot'},g);
+    if(!inH)el('circle',{cx:lx,cy:ly,r:7,fill:'transparent',class:'cp legpt','data-k':`L:${c.id}:${i}`,'data-n':LEGNAME[c.type][i]},g);});
+}
+function drawComps(){gC.innerHTML='';CIR.comps.forEach(drawComp)}
+/* ---------- fili ---------- */
+function ptPos(k){const a=k.split(':');if(a[0]==='P'){const p=PINS.find(x=>x.n===a[1]);return{x:p.x,y:p.y}}if(a[0]==='H')return holeXY(+a[1],+a[2]);
+  const c=CIR.comps.find(x=>x.id==a[1]);return c?legsOf(c)[+a[2]]:{x:0,y:0}}
+const WCOL={rosso:'#E53935',nero:'#222',verde:'#2E9E44',blu:'#1E6FD9',giallo:'#F2C200',arancione:'#F57C00',bianco:'#EEE',viola:'#8E44AD'};
+function wirePath(w){const pts=[ptPos(w.a),...(w.pts||[]),ptPos(w.b)];return pts.map((p,i)=>(i?'L':'M')+p.x+' '+p.y).join(' ')}
+function drawWires(){gW.innerHTML='';CIR.wires.forEach(w=>{const g=el('g',{class:'wire'+(ED.sel&&ED.sel.wid===w.id?' sel':''),'data-wid':w.id},gW);const d=wirePath(w);
+  el('path',{d,stroke:'rgba(0,0,0,.25)','stroke-width':6,fill:'none','stroke-linejoin':'round','stroke-linecap':'round',transform:'translate(0 1.5)'},g);
+  el('path',{d,stroke:WCOL[w.color]||'#2E9E44','stroke-width':4,fill:'none','stroke-linejoin':'round','stroke-linecap':'round',class:'wpath'},g);
+  el('path',{d,stroke:'transparent','stroke-width':12,fill:'none',class:'whit'},g);
+  [ptPos(w.a),ptPos(w.b)].forEach(p=>el('circle',{cx:p.x,cy:p.y,r:3,fill:WCOL[w.color]||'#2E9E44',stroke:'#222','stroke-width':1},g));
+  if(ED.sel&&ED.sel.wid===w.id&&!ED.sim)(w.pts||[]).forEach((p,i)=>el('circle',{cx:p.x,cy:p.y,r:5,class:'bend','data-w':w.id,'data-i':i,fill:'#fff',stroke:'#1E6FD9','stroke-width':2},g))})}
+function redraw(){drawComps();drawWires();ED.onChange()}
+/* ---------- storia (annulla) ---------- */
+function snapshot(){ED.hist.push(JSON.stringify(CIR));if(ED.hist.length>60)ED.hist.shift()}
+function undo(){if(!ED.hist.length||ED.sim)return;const s=JSON.parse(ED.hist.pop());CIR.comps=s.comps;CIR.wires=s.wires;CIR.nid=s.nid;ED.sel=null;redraw();showInspector()}
+/* ---------- operazioni ---------- */
+function addComp(type,x,y,props={}){const c={id:CIR.nid++,type,x,y,rot:0,...(type==='led'?{color:'rosso'}:type==='res'?{value:220}:{}),...props};CIR.comps.push(c);return c}
+function snapComp(c){const l0=legsOf(c)[0];let best=null,bd=P;HOLES.forEach(h=>{const d=Math.hypot(h.x-l0.x,h.y-l0.y);if(d<bd){bd=d;best=h}});if(best){c.x+=best.x-l0.x;c.y+=best.y-l0.y}}
+function deleteSel(){if(!ED.sel||ED.sim)return;snapshot();if(ED.sel.id){const id=ED.sel.id;CIR.comps=CIR.comps.filter(c=>c.id!==id);CIR.wires=CIR.wires.filter(w=>!w.a.startsWith(`L:${id}:`)&&!w.b.startsWith(`L:${id}:`))}
+  else CIR.wires=CIR.wires.filter(w=>w.id!==ED.sel.wid);ED.sel=null;redraw();showInspector()}
+function rotateSel(){if(!ED.sel||!ED.sel.id||ED.sim)return;const c=CIR.comps.find(x=>x.id===ED.sel.id);if(!c)return;snapshot();c.rot=(c.rot+1)%4;snapComp(c);redraw()}
+function autoColor(a,b){const s=a+b;if(/P:5V|P:3V3|:0$|:15$/.test(a)&&/^H:\d+:(0|15)$/.test(b)||/P:5V/.test(s))return'rosso';if(/P:GND/.test(s)||/^H:\d+:(1|16)$/.test(a)||/^H:\d+:(1|16)$/.test(b))return'nero';
+  const cyc=['verde','blu','giallo','arancione','viola'];return cyc[CIR.wires.length%cyc.length]}
+/* ---------- ispettore ---------- */
+const insp=document.getElementById('insp');
+function showInspector(){
+  if(!ED.sel||ED.sim){insp.hidden=true;return}insp.hidden=false;
+  if(ED.sel.id){const c=CIR.comps.find(x=>x.id===ED.sel.id);if(!c){insp.hidden=true;return}
+    let h=`<div class="ih"><b>${compName(c)}</b><span>${({led:'LED',res:'Resistore',btn:'Pulsante'})[c.type]}</span></div>`;
+    if(c.type==='led')h+=`<label>Colore<select id="ipCol">${Object.keys(LEDC).map(k=>`<option ${c.color===k?'selected':''}>${k}</option>`).join('')}</select></label>`;
+    if(c.type==='res'){const kv=c.value>=1000;h+=`<label>Resistenza<div class="irow"><input id="ipVal" type="number" min="1" value="${kv?c.value/1000:c.value}"><select id="ipUnit"><option value="1" ${!kv?'selected':''}>Ω</option><option value="1000" ${kv?'selected':''}>kΩ</option></select></div></label><div class="ihint">Per un LED: <b>220 Ω</b> · per la pull-down: <b>10 kΩ</b></div>`}
+    h+=`<div class="ibtns"><button id="ipRot">⟳ Ruota</button><button id="ipDel">🗑 Elimina</button></div>`;insp.innerHTML=h;
+    if(c.type==='led')document.getElementById('ipCol').onchange=e=>{snapshot();c.color=e.target.value;redraw()};
+    if(c.type==='res'){const up=()=>{const v=Math.max(1,Math.round(+document.getElementById('ipVal').value*+document.getElementById('ipUnit').value));snapshot();c.value=v;redraw()};document.getElementById('ipVal').onchange=up;document.getElementById('ipUnit').onchange=up}
+    document.getElementById('ipRot').onclick=rotateSel;document.getElementById('ipDel').onclick=deleteSel;
+  }else{const w=CIR.wires.find(x=>x.id===ED.sel.wid);if(!w){insp.hidden=true;return}
+    insp.innerHTML=`<div class="ih"><b>Filo</b><span>${descPt(w.a)} → ${descPt(w.b)}</span></div><label>Colore</label><div class="swatch">${Object.entries(WCOL).map(([k,v])=>`<button data-c="${k}" title="${k}" style="background:${v}" class="${w.color===k?'on':''}"></button>`).join('')}</div><div class="ihint">Trascina i pallini bianchi per spostare le curve del filo.</div><div class="ibtns"><button id="ipAuto">↻ Percorso automatico</button><button id="ipStr">／ Diritto</button></div><div class="ibtns"><button id="ipDel">🗑 Elimina</button></div>`;
+    document.getElementById('ipAuto').onclick=()=>{snapshot();w.pts=[];w.pts=route(w.a,w.b);redraw();showInspector()};document.getElementById('ipStr').onclick=()=>{snapshot();w.pts=[];redraw();showInspector()};
+    insp.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{w.color=b.dataset.c;redraw();showInspector()});document.getElementById('ipDel').onclick=deleteSel}
+}
+function descPt(k){const a=k.split(':');if(a[0]==='P')return pinNice(a[1]);if(a[0]==='H'){const r=+a[2];return r<=1||r>=15?`binario ${rowName(r)}`:`foro ${rowName(r)}${+a[1]+1}`}const c=CIR.comps.find(x=>x.id==a[1]);return c?compName(c)+' ('+LEGNAME[c.type][+a[2]]+')':'?'}
+/* ---------- tooltip ---------- */
+const tip=document.getElementById('tip');
+function showTip(ev,txt){tip.hidden=false;tip.textContent=txt;tip.style.left=ev.clientX+14+'px';tip.style.top=ev.clientY+14+'px'}
+function tipFor(k,t){const a=k.split(':');if(a[0]==='P')return'Arduino · '+pinNice(a[1])+(a[1]==='D0'||a[1]==='D1'?' (usato dal monitor seriale: meglio evitarlo)':'');if(a[0]==='H'){const r=+a[2];return r<=1||r>=15?`Binario ${rowName(r)==='+'?'+ (positivo)':'− (negativo)'}: tutta la riga è collegata`:`Foro ${rowName(r)}${+a[1]+1}: collegato agli altri 4 fori della stessa colonna (${r<=7?'a–e':'f–j'})`}return t||''}
+/* ---------- punti di collegamento e aggancio magnetico ---------- */
+function allCPs(){const L=PINS.map(p=>({k:'P:'+p.n,x:p.x,y:p.y}));HOLES.forEach(h=>L.push({k:h.k,x:h.x,y:h.y}));
+  CIR.comps.forEach(c=>legsOf(c).forEach((l,i)=>{if(!holeAt(l.x,l.y))L.push({k:`L:${c.id}:${i}`,x:l.x,y:l.y})}));return L}
+function nearestCP(wp,rad){let best=null,bd=rad;for(const p of allCPs()){const d=Math.hypot(p.x-wp.x,p.y-wp.y);if(d<bd){bd=d;best=p}}return best}
+const snapMark=el('g',{id:'snapmark',style:'pointer-events:none'},world);
+function showSnap(p,ok=true){snapMark.innerHTML='';if(!p)return;el('circle',{cx:p.x,cy:p.y,r:7,fill:ok?'rgba(46,158,68,.25)':'rgba(211,47,47,.25)',stroke:ok?'#2E9E44':'#D32F2F','stroke-width':2},snapMark)}
+/* ---------- instradamento automatico dei fili (a "L", su corsie libere) ---------- */
+function usedY(){const Y=[];CIR.wires.forEach(w=>{const pts=[ptPos(w.a),...(w.pts||[]),ptPos(w.b)];for(let i=1;i<pts.length;i++)if(Math.abs(pts[i].y-pts[i-1].y)<1)Y.push({y:pts[i].y,x1:Math.min(pts[i].x,pts[i-1].x),x2:Math.max(pts[i].x,pts[i-1].x)})});return Y}
+function usedX(){const X=[];CIR.wires.forEach(w=>{const pts=[ptPos(w.a),...(w.pts||[]),ptPos(w.b)];for(let i=1;i<pts.length;i++)if(Math.abs(pts[i].x-pts[i-1].x)<1)X.push({x:pts[i].x,y1:Math.min(pts[i].y,pts[i-1].y),y2:Math.max(pts[i].y,pts[i-1].y)})});return X}
+function freeLane(base,step,x1,x2){const U=usedY();for(let k=0;k<30;k++){const y=base+k*step;if(!U.some(u=>Math.abs(u.y-y)<4&&u.x2>x1-2&&u.x1<x2+2))return y}return base}
+function route(a,b){const A=ptPos(a),B=ptPos(b);const top=k=>k.startsWith('P:')&&PINS.find(p=>'P:'+p.n===k).top,bot=k=>k.startsWith('P:')&&!PINS.find(p=>'P:'+p.n===k).top;
+  const x1=Math.min(A.x,B.x),x2=Math.max(A.x,B.x);
+  if(top(a)||top(b)){const y=freeLane(AY-10,-7,x1,x2);return[{x:A.x,y},{x:B.x,y}]}
+  if(bot(a)||bot(b)){const y=freeLane(AY+302,7,x1,x2);return[{x:A.x,y},{x:B.x,y}]}
+  if(Math.abs(A.x-B.x)<1||Math.abs(A.y-B.y)<1)return[];
+  return[{x:A.x,y:B.y}]}
+/* ---------- input ---------- */
+let downPt=null,moved=false,handle=null;
+function finishWire(k){if(k!==ED.wiring.a){snapshot();const pts=ED.wiring.pts.length?ED.wiring.pts:route(ED.wiring.a,k);const w={id:CIR.nid++,a:ED.wiring.a,b:k,pts,color:autoColor(ED.wiring.a,k)};CIR.wires.push(w);ED.sel={wid:w.id}}
+  ED.wiring=null;gT.innerHTML='';showSnap(null);redraw();showInspector()}
+svg.addEventListener('pointerdown',ev=>{
+  const t=ev.target,wp=toWorld(ev);downPt={x:ev.clientX,y:ev.clientY};moved=false;
+  if(ED.sim){const b=t.closest('.comp');if(b){const c=CIR.comps.find(x=>x.id==b.dataset.id);if(c&&c.type==='btn'){ED.pressed[c.id]=true;drawComps();ED.onPress&&ED.onPress(c.id,true);ev.preventDefault()}}else startPan(ev);return}
+  if(t.classList.contains('bend')){const w=CIR.wires.find(x=>x.id===+t.dataset.w);snapshot();handle={w,i:+t.dataset.i};svg.setPointerCapture(ev.pointerId);return}
+  const near=nearestCP(wp,ED.wiring?11:8);
+  if(ED.wiring){if(near)finishWire(near.k);else{ED.wiring.pts.push({x:Math.round(wp.x),y:Math.round(wp.y)});drawTemp(wp)}ev.preventDefault();return}
+  const cg=t.closest('.comp');
+  if(cg&&!(near&&Math.hypot(near.x-wp.x,near.y-wp.y)<4)){const c=CIR.comps.find(x=>x.id==cg.dataset.id);ED.sel={id:c.id};snapshot();ED.drag={c,dx:wp.x-c.x,dy:wp.y-c.y,moved:false};svg.setPointerCapture(ev.pointerId);redraw();showInspector();return}
+  const wg=t.closest('.wire');
+  if(near&&!(wg&&Math.hypot(near.x-wp.x,near.y-wp.y)>5)){ED.wiring={a:near.k,pts:[]};ED.sel=null;showInspector();drawTemp(wp);ev.preventDefault();return}
+  if(wg){ED.sel={wid:+wg.dataset.wid};redraw();showInspector();return}
+  ED.sel=null;redraw();showInspector();startPan(ev);
+});
+function startPan(ev){ED.pan={x:ev.clientX,y:ev.clientY,vx:ED.view.x,vy:ED.view.y};svg.setPointerCapture(ev.pointerId);svg.classList.add('panning')}
+function dragTargets(c){return legsOf(c).map(l=>{let best=null,bd=P*.6;HOLES.forEach(h=>{const d=Math.hypot(h.x-l.x,h.y-l.y);if(d<bd){bd=d;best=h}});return best})}
+function occupied(h,except){return CIR.comps.some(o=>o!==except&&legsOf(o).some(l=>Math.abs(l.x-h.x)<1&&Math.abs(l.y-h.y)<1))}
+svg.addEventListener('pointermove',ev=>{
+  const wp=toWorld(ev);
+  if(handle){handle.w.pts[handle.i]={x:Math.round(wp.x/4)*4,y:Math.round(wp.y/4)*4};drawWires();return}
+  if(ED.drag){ED.drag.moved=true;const c=ED.drag.c;c.x=wp.x-ED.drag.dx;c.y=wp.y-ED.drag.dy;drawComps();drawWires();
+    snapMark.innerHTML='';const tg=dragTargets({...c});const l0=legsOf(c)[0];let off=null;
+    if(tg[0]){off={x:tg[0].x-l0.x,y:tg[0].y-l0.y}}
+    if(off){legsOf(c).forEach(l=>{const h=holeAt(l.x+off.x,l.y+off.y);const okh=h&&!occupied(h,c);el('circle',{cx:l.x+off.x,cy:l.y+off.y,r:6,fill:okh?'rgba(46,158,68,.35)':'rgba(211,47,47,.35)',stroke:okh?'#2E9E44':'#D32F2F','stroke-width':2},snapMark)})}
+    return}
+  if(ED.pan){ED.view.x=ED.pan.vx+ev.clientX-ED.pan.x;ED.view.y=ED.pan.vy+ev.clientY-ED.pan.y;applyView();return}
+  const near=ED.sim?null:nearestCP(wp,ED.wiring?11:8);
+  if(ED.wiring){drawTemp(near?{x:near.x,y:near.y}:wp);showSnap(near)}else showSnap(near&&!ev.target.closest('.comp')?near:null);
+  if(near)showTip(ev,tipFor(near.k,near.k.startsWith('L:')?LEGNAME[CIR.comps.find(c=>c.id==near.k.split(':')[1]).type][+near.k.split(':')[2]]:''));else tip.hidden=true;
+  if(near&&near.k.startsWith('H:')){const s=HOLES.find(h=>h.k===near.k).s;if(ED._hs!==s){if(ED._hs)(holeEls[ED._hs]||[]).forEach(h=>h.classList.remove('hl'));ED._hs=s;(holeEls[s]||[]).forEach(h=>h.classList.add('hl'))}}
+  else if(ED._hs){(holeEls[ED._hs]||[]).forEach(h=>h.classList.remove('hl'));ED._hs=null}
+});
+svg.addEventListener('pointerup',ev=>{
+  if(ED.sim){let ch=false;for(const k in ED.pressed)if(ED.pressed[k]){ED.pressed[k]=false;ch=true;ED.onPress&&ED.onPress(+k,false)}if(ch)drawComps()}
+  if(handle){handle=null;redraw();return}
+  if(ED.drag){const c=ED.drag.c;snapMark.innerHTML='';if(ED.drag.moved){snapComp(c);redraw()}else ED.hist.pop();ED.drag=null}
+  if(ED.pan){ED.pan=null;svg.classList.remove('panning')}
+});
+svg.addEventListener('pointerleave',()=>{showSnap(null);tip.hidden=true});
+svg.addEventListener('wheel',ev=>{ev.preventDefault();const r=svg.getBoundingClientRect();const mx=ev.clientX-r.left,my=ev.clientY-r.top;const z0=ED.view.z,z=Math.max(.4,Math.min(3,z0*(ev.deltaY<0?1.1:1/1.1)));
+  ED.view.x=mx-(mx-ED.view.x)*z/z0;ED.view.y=my-(my-ED.view.y)*z/z0;ED.view.z=z;applyView()},{passive:false});
+function drawTemp(wp){if(!ED.wiring){gT.innerHTML='';return}const pts=[ptPos(ED.wiring.a),...ED.wiring.pts,wp];gT.innerHTML='';
+  el('path',{d:pts.map((p,i)=>(i?'L':'M')+p.x+' '+p.y).join(' '),stroke:'#2E9E44','stroke-width':4,fill:'none','stroke-dasharray':'8 5','stroke-linecap':'round'},gT)}
+addEventListener('keydown',ev=>{if(ev.target.closest&&ev.target.closest('textarea,input,select'))return;
+  if(ev.key==='Escape'){ED.wiring=null;gT.innerHTML='';ED.sel=null;redraw();showInspector()}
+  if((ev.key==='Delete'||ev.key==='Backspace')&&ED.sel){ev.preventDefault();deleteSel()}
+  if((ev.key==='r'||ev.key==='R')&&!ev.ctrlKey&&!ev.metaKey)rotateSel();
+  if((ev.ctrlKey||ev.metaKey)&&ev.key==='z'){ev.preventDefault();undo()}
+  if(ED.sel&&ED.sel.id&&!ED.sim&&/^Arrow/.test(ev.key)){ev.preventDefault();const c=CIR.comps.find(x=>x.id===ED.sel.id);snapshot();c.x+=ev.key==='ArrowLeft'?-P:ev.key==='ArrowRight'?P:0;c.y+=ev.key==='ArrowUp'?-P:ev.key==='ArrowDown'?P:0;redraw()}});
+/* ---------- trascinamento dal pannello componenti ---------- */
+function startPaletteDrag(ev,type){if(ED.sim)return;ev.preventDefault();const ghost=document.getElementById('ghost');ghost.hidden=false;ghost.textContent=({led:'💡 LED',res:'〰 Resistenza',btn:'🔘 Pulsante'})[type];
+  const mv=e=>{ghost.style.left=e.clientX+10+'px';ghost.style.top=e.clientY+10+'px'};mv(ev);
+  const up=e=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);ghost.hidden=true;const r=svg.getBoundingClientRect();
+    if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom){const wp=toWorld(e);snapshot();const c=addComp(type,wp.x-(type==='res'?2*P:type==='btn'?P:P/2),wp.y+(type==='led'?0:type==='btn'?-P:0));snapComp(c);ED.sel={id:c.id};redraw();showInspector()}};
+  addEventListener('pointermove',mv);addEventListener('pointerup',up)}
+
+/* =====================================================
+   ESERCIZI GUIDATI (6) — preparano ai 3 esercizi del compito
+   ===================================================== */
+/* ---------- costruttori dei circuiti di esempio ---------- */
+function R_(){CIR.comps=[];CIR.wires=[];CIR.nid=1}
+function W_(a,b,color,pts){CIR.wires.push({id:CIR.nid++,a,b,color,pts:pts||route(a,b)})}
+function LED_(c,r,color){const h=holeXY(c,r);return addComp('led',h.x,h.y,{color})}
+function RES_(c,r,rotq,value){const h=holeXY(c,r);const x=addComp('res',h.x,h.y,{value});x.rot=rotq;return x}
+function BTN_(c){const h=holeXY(c,7);return addComp('btn',h.x,h.y)}
+function RAILS_(){W_('P:5V','H:0:0','rosso',[{x:222,y:410},{x:452,y:410},{x:452,y:120}]);W_('P:GND3','H:1:1','nero',[{x:176,y:76},{x:466,y:76},{x:466,y:136}]);W_('P:GND1','H:2:16','nero',[{x:236,y:400},{x:530,y:400}])}
+function topRoute(hk,pin){const h=holeXY(+hk.split(':')[1],+hk.split(':')[2]),p=PINS.find(x=>x.n==='D'+pin),y=50+(pin%7)*4;return[{x:h.x,y},{x:p.x,y}]}
+function LEDGND_(c,color,pin){LED_(c,7,color);RES_(c,5,3,220);W_(`H:${c+1}:3`,'P:D'+pin,pinColor(pin))}
+function BTNPD_(c,pin){BTN_(c);W_(`H:${c}:3`,`H:${c}:0`,'rosso');RES_(c,12,1,10000);W_(`H:${c+2}:11`,'P:D'+pin,'blu')}
+function pinColor(p){return['verde','giallo','arancione','viola','blu'][p%5]}
+/* ---------- codici di esempio ---------- */
+const CODE0=`void setup()
+{
+
+}
+
+void loop()
+{
+
+}`;
+const SOL={
+e1:`// Esercizio guidato 1 - La lampada da scrivania
+int pulsante = 2;       // il pulsante è collegato al pin 2
+int ledGiallo = 12;     // il LED giallo è collegato al pin 12
+int stato = 0;          // qui salvo la lettura del pulsante
+
+void setup() {
+  pinMode(pulsante, INPUT);      // il pin del pulsante ascolta
+  pinMode(ledGiallo, OUTPUT);    // il pin del LED parla
+  Serial.begin(9600);            // apro il monitor seriale
+}
+
+void loop() {
+  stato = digitalRead(pulsante);       // leggo il pulsante
+  if (stato == HIGH) {                 // se è premuto...
+    digitalWrite(ledGiallo, HIGH);     // ...accendo il LED
+    Serial.println("LUCE ACCESA");     // e lo scrivo sul monitor
+  } else {                             // altrimenti...
+    digitalWrite(ledGiallo, LOW);      // ...spengo il LED
+    Serial.println("LUCE SPENTA");     // e lo scrivo sul monitor
+  }
+  delay(100);                          // piccola pausa per leggere meglio
+}`,
+e2:`// Esercizio guidato 2 - La luce del frigorifero
+int pulsante = 4;       // pulsante (la porta) sul pin 4
+int ledVerde = 9;       // LED verde sul pin 9
+int stato = 0;          // lettura del pulsante
+
+void setup() {
+  pinMode(pulsante, INPUT);     // il pulsante si ascolta
+  pinMode(ledVerde, OUTPUT);    // il LED si comanda
+  Serial.begin(9600);           // apro il monitor seriale
+}
+
+void loop() {
+  stato = digitalRead(pulsante);       // leggo il pulsante
+  if (stato == HIGH) {                 // se è premuto (porta aperta)...
+    digitalWrite(ledVerde, LOW);       // ...spengo il LED
+    Serial.println("PORTA APERTA");    // e lo scrivo
+  } else {                             // se NON è premuto...
+    digitalWrite(ledVerde, HIGH);      // ...il LED è acceso
+    Serial.println("PORTA CHIUSA");    // e lo scrivo
+  }
+  delay(100);                          // piccola pausa
+}`,
+e3:`// Esercizio guidato 3 - La luce del cantiere
+int pulsante = 3;       // pulsante sul pin 3
+int ledVerde = 11;      // LED verde sul pin 11
+int ledGiallo = 10;     // LED giallo sul pin 10
+
+void setup() {
+  pinMode(pulsante, INPUT);      // il pulsante si ascolta
+  pinMode(ledVerde, OUTPUT);     // LED verde in uscita
+  pinMode(ledGiallo, OUTPUT);    // LED giallo in uscita
+  Serial.begin(9600);            // apro il monitor seriale
+}
+
+void loop() {
+  if (digitalRead(pulsante) == HIGH) {   // se il pulsante è premuto...
+    Serial.println("LAVORI IN CORSO");   // scrivo il messaggio
+    digitalWrite(ledVerde, LOW);         // spengo il verde
+    digitalWrite(ledGiallo, HIGH);       // giallo acceso...
+    delay(500);                          // ...per mezzo secondo
+    digitalWrite(ledGiallo, LOW);        // giallo spento...
+    delay(500);                          // ...per mezzo secondo
+  } else {                               // altrimenti...
+    Serial.println("STRADA LIBERA");     // scrivo il messaggio
+    digitalWrite(ledGiallo, LOW);        // il giallo resta spento
+    digitalWrite(ledVerde, HIGH);        // il verde resta acceso
+    delay(100);                          // piccola pausa
+  }
+}`,
+e4:`// Esercizio guidato 4 - Il forno a microonde
+int pulsante = 2;       // pulsante sul pin 2
+int ledVerde = 8;       // LED verde sul pin 8
+int ledRosso = 7;       // LED rosso sul pin 7
+
+void setup() {
+  pinMode(pulsante, INPUT);      // il pulsante si ascolta
+  pinMode(ledVerde, OUTPUT);     // LED verde in uscita
+  pinMode(ledRosso, OUTPUT);     // LED rosso in uscita
+  Serial.begin(9600);            // apro il monitor seriale
+}
+
+void loop() {
+  if (digitalRead(pulsante) == HIGH) {   // se premo il pulsante...
+    digitalWrite(ledVerde, LOW);         // spengo il verde
+    Serial.println("COTTURA...");        // scrivo che sta cuocendo
+    delay(2000);                         // aspetto 2 secondi
+    Serial.println("DIN DON!");          // il cibo è pronto
+    digitalWrite(ledRosso, HIGH);        // 1° lampeggio: acceso
+    delay(300);                          // per 300 ms
+    digitalWrite(ledRosso, LOW);         // spento
+    delay(300);                          // per 300 ms
+    digitalWrite(ledRosso, HIGH);        // 2° lampeggio: acceso
+    delay(300);                          // per 300 ms
+    digitalWrite(ledRosso, LOW);         // spento
+    delay(300);                          // per 300 ms
+    digitalWrite(ledRosso, HIGH);        // 3° lampeggio: acceso
+    delay(300);                          // per 300 ms
+    digitalWrite(ledRosso, LOW);         // spento
+    delay(300);                          // per 300 ms
+  } else {                               // altrimenti...
+    digitalWrite(ledRosso, LOW);         // rosso spento
+    digitalWrite(ledVerde, HIGH);        // verde acceso: forno in attesa
+    Serial.println("IN ATTESA");         // scrivo il messaggio
+    delay(100);                          // piccola pausa
+  }
+}`,
+e5:`// Esercizio guidato 5 - La sbarra del parcheggio
+int pulsante = 2;       // pulsante di chiamata sul pin 2
+int ledRosso = 12;      // LED ROSSO sul pin 12
+int ledGiallo = 11;     // LED GIALLO sul pin 11
+int ledVerde = 10;      // LED VERDE sul pin 10
+
+void setup() {
+  pinMode(pulsante, INPUT);      // il pulsante si ascolta
+  pinMode(ledRosso, OUTPUT);     // rosso in uscita
+  pinMode(ledGiallo, OUTPUT);    // giallo in uscita
+  pinMode(ledVerde, OUTPUT);     // verde in uscita
+  Serial.begin(9600);            // apro il monitor seriale
+}
+
+void loop() {
+  if (digitalRead(pulsante) == HIGH) {   // un'auto chiede di entrare
+    delay(1000);                         // 1) il rosso resta acceso ancora 1 secondo
+    digitalWrite(ledRosso, LOW);         // 2) spengo il rosso...
+    digitalWrite(ledGiallo, HIGH);       //    ...e accendo il giallo
+    delay(1000);                         //    per 1 secondo
+    digitalWrite(ledGiallo, LOW);        // 3) spengo il giallo...
+    digitalWrite(ledVerde, HIGH);        //    ...e accendo il verde
+    Serial.println("SBARRA ALZATA");     //    lo scrivo sul monitor
+    delay(2000);                         //    per 2 secondi
+    digitalWrite(ledVerde, LOW);         // 4) lampeggio 1: verde spento
+    delay(250);                          //    250 ms
+    digitalWrite(ledVerde, HIGH);        //    verde acceso
+    delay(250);                          //    250 ms
+    digitalWrite(ledVerde, LOW);         //    lampeggio 2: spento
+    delay(250);                          //    250 ms
+    digitalWrite(ledVerde, HIGH);        //    acceso
+    delay(250);                          //    250 ms
+    digitalWrite(ledVerde, LOW);         //    lampeggio 3: spento
+    delay(250);                          //    250 ms
+    digitalWrite(ledVerde, HIGH);        //    acceso
+    delay(250);                          //    250 ms
+    digitalWrite(ledVerde, LOW);         // 5) spengo il verde...
+    digitalWrite(ledRosso, HIGH);        //    ...e riaccendo il rosso
+    Serial.println("SBARRA ABBASSATA");  //    lo scrivo sul monitor
+  } else {                               // situazione normale:
+    digitalWrite(ledRosso, HIGH);        // rosso acceso
+    digitalWrite(ledGiallo, LOW);        // giallo spento
+    digitalWrite(ledVerde, LOW);         // verde spento
+  }
+}`,
+e6:`// Esercizio guidato 6 - Il contapersone del museo
+int pulsante = 2;       // pulsante all'ingresso sul pin 2
+int ledVerde = 6;       // LED verde sul pin 6
+int visitatori = 0;     // il contatore parte da zero
+
+void setup() {
+  pinMode(pulsante, INPUT);      // il pulsante si ascolta
+  pinMode(ledVerde, OUTPUT);     // il LED si comanda
+  Serial.begin(9600);            // apro il monitor seriale
+}
+
+void loop() {
+  if (digitalRead(pulsante) == HIGH) {     // è entrato qualcuno?
+    visitatori = visitatori + 1;           // aggiungo 1 al contatore
+    Serial.print("Visitatore numero ");    // scrivo il testo (resto sulla stessa riga)
+    Serial.println(visitatori);            // scrivo il numero e vado a capo
+    digitalWrite(ledVerde, HIGH);          // accendo il verde: benvenuto!
+    delay(500);                            // per mezzo secondo
+    digitalWrite(ledVerde, LOW);           // lo spengo
+    delay(500);                            // pausa: così una pressione breve conta una volta
+  }
+}`};
+const REFC={
+ e1:()=>{R_();RAILS_();LEDGND_(10,'giallo',12);BTNPD_(18,2)},
+ e2:()=>{R_();RAILS_();LEDGND_(6,'verde',9);BTNPD_(22,4)},
+ e3:()=>{R_();RAILS_();LEDGND_(4,'verde',11);LEDGND_(9,'giallo',10);BTNPD_(18,3)},
+ e4:()=>{R_();RAILS_();LEDGND_(4,'verde',8);LEDGND_(9,'rosso',7);BTNPD_(18,2)},
+ e5:()=>{R_();RAILS_();LEDGND_(3,'rosso',12);LEDGND_(8,'giallo',11);LEDGND_(13,'verde',10);BTNPD_(21,2)},
+ e6:()=>{R_();RAILS_();LEDGND_(8,'verde',6);BTNPD_(18,2)}};
+
+/* ---------- verifiche riutilizzabili ---------- */
+const ok=(m)=>({ok:true,msg:m||''}),no=m=>({ok:false,msg:m});
+function chkLED(ctx,color){const L=ctx.an.leds.filter(l=>l.color===color);
+  if(!L.length){const other=ctx.an.leds.find(l=>!ctx.ex.colors.includes(l.color));return no(other?`Hai un LED <b>${other.color}</b>: selezionalo e cambia il colore in <b>${color}</b> nel pannello in alto a destra.`:`Trascina un <b>LED</b> sulla breadboard e scegli il colore <b>${color}</b>.`)}
+  const l=L[0];
+  if(!l.inBoard)return no(`Il LED ${color} non è infilato bene nella breadboard: trascinalo finché le gambe entrano nei fori.`);
+  if(l.same)return no(`Le due gambe del LED ${color} sono nella <b>stessa colonna</b>: così sono collegate tra loro e il LED non si accende. Mettile in due colonne diverse.`);
+  if(l.reversed)return no(`Il LED ${color} è <b>al contrario</b>: la gamba piegata (+, anodo) va verso il pin, quella dritta (−, catodo) verso GND. Ruotalo due volte (tasto R).`);
+  if(l.direct5V)return no(`Il LED ${color} è collegato al 5V: così resta sempre acceso. Collega la gamba + a un <b>pin digitale</b>.`);
+  if(!l.gnd)return no(`La gamba dritta (−) del LED ${color} deve arrivare a <b>GND</b> (binario −), passando per la resistenza.`);
+  if(!l.res)return no(`Al LED ${color} manca la <b>resistenza</b>: senza, passa troppa corrente e il LED si brucia. Mettine una da 220 Ω in serie.`);
+  if(l.res>1000)return no(`La resistenza del LED ${color} è da ${fmtR(l.res)}: è troppo grande, il LED sarebbe quasi spento. Usa <b>220 Ω</b>.`);
+  if(l.res<100)return no(`La resistenza del LED ${color} è da ${fmtR(l.res)}: è troppo piccola. Usa <b>220 Ω</b>.`);
+  if(l.pin===null)return no(`Collega la gamba piegata (+) del LED ${color} a un <b>pin digitale</b> di Arduino con un filo.`);
+  if(l.pin<=1)return no(`Il LED ${color} usa il pin ${l.pin}: i pin 0 e 1 servono al monitor seriale. Scegli un pin dal 2 al 13.`);
+  return ok(`LED ${color} → pin ${l.pin} con resistenza da ${fmtR(l.res)} ✓`)}
+function chkBTN(ctx){const B=ctx.an.btns;if(!B.length)return no('Trascina un <b>pulsante</b> sulla breadboard, a cavallo della scanalatura centrale.');const b=B[0];
+  if(!b.inBoard)return no('Il pulsante non è infilato bene: mettilo <b>a cavallo della scanalatura</b> centrale (due gambe sopra, due sotto).');
+  if(b.pin===null)return no('Collega un lato del pulsante a un <b>pin digitale</b> (es. 2) con un filo.');
+  if(b.rotated)return no('<b>Pulsante ruotato!</b> Il 5V e il pin sono sulla stessa coppia di gambe: sembrerà sempre premuto. Ruota il pulsante (tasto R) o sposta un filo sull\'altro lato.');
+  if(!b.to5V&&b.pullup)return no('Il pulsante va verso GND: in questo esercizio usiamo il circuito con <b>pull-down</b>: un lato del pulsante a <b>5V</b>, l\'altro al pin.');
+  if(!b.to5V)return no('L\'altro lato del pulsante deve arrivare al <b>5V</b> (binario +).');
+  if(!b.pull)return no('Manca la <b>resistenza di pull-down</b>: metti una resistenza da 10 kΩ tra il pin del pulsante e GND, altrimenti il pin è flottante.');
+  if(b.pull<1000)return no(`La pull-down è da ${fmtR(b.pull)}: troppo piccola. Usa <b>10 kΩ</b>.`);
+  if(b.pin<=1)return no('I pin 0 e 1 servono al monitor seriale: collega il pulsante a un pin dal 2 al 13.');
+  return ok(`Pulsante → pin ${b.pin} con pull-down da ${fmtR(b.pull)} ✓`)}
+function chkCircuit(ctx){if(ctx.an.shorts)return no('⚠ C\'è un <b>cortocircuito</b>: il 5V è collegato direttamente a GND. Controlla i fili rossi e neri.');
+  for(const c of ctx.ex.colors){const r=chkLED(ctx,c);if(!r.ok)return r}return chkBTN(ctx)}
+function chkSetup(ctx){if(!chkCircuit(ctx).ok)return no('Prima completa il circuito: il codice deve usare i pin che hai scelto.');
+  if(ctx.err)return no(`Il codice ha un errore alla riga ${ctx.err.line||'?'}: ${ctx.err.message}`);
+  const s=ctx.setup;if(!s)return no('Scrivi il setup().');const b=ctx.an.btns[0];
+  if(s.modes[b.pin]===undefined)return no(`Nel setup() manca <code>pinMode(${b.pin}, INPUT);</code> per il pulsante (che è sul pin ${b.pin}).`);
+  if(s.modes[b.pin]!==0)return no(`Il pulsante è sul pin ${b.pin}: deve essere <b>INPUT</b> (Arduino ascolta).`);
+  for(const c of ctx.ex.colors){const l=ctx.an.leds.find(x=>x.color===c);if(s.modes[l.pin]!==1)return no(`Il LED ${c} è sul pin ${l.pin}: nel setup() serve <code>pinMode(${l.pin}, OUTPUT);</code>`)}
+  if(!s.serial)return no('Manca <code>Serial.begin(9600);</code> nel setup(): senza, il monitor seriale non mostra niente.');
+  return ok('setup() corretto ✓')}
+function chkComments(ctx){const bad=[];ctx.code.split('\n').forEach((l,i)=>{const t=l.trim();if(!t||/^[{}]+$/.test(t)||t.startsWith('//'))return;if(/^(void\s+\w+\s*\(\s*\)\s*\{?|\}?\s*else\s*\{?)$/.test(t))return;if(!l.includes('//'))bad.push(i+1)});
+  return bad.length?no(`Mancano i commenti alle righe: <b>${bad.slice(0,8).join(', ')}${bad.length>8?'…':''}</b>. Nel compito ogni riga va commentata con <code>//</code>.`):ok('Tutte le righe sono commentate ✓')}
+const has=(lines,s)=>lines.some(l=>l.toUpperCase().includes(s.toUpperCase()));
+
+/* ---------- gli esercizi ---------- */
+const EX=[
+{id:'e1',part:1,n:1,icon:'💡',title:'La lampada da scrivania',colors:['giallo'],
+ sub:'Pulsante, LED e monitor seriale: il primo circuito completo',
+ learn:['Montare un LED con la sua resistenza','Collegare un pulsante con la resistenza di pull-down','Leggere il pulsante con digitalRead e decidere con if / else','Scrivere messaggi sul monitor seriale'],
+ table:[['Pulsante','LED giallo','Monitor seriale'],['Premuto','acceso','LUCE ACCESA'],['Rilasciato','spento','LUCE SPENTA']],
+ before:`<div class="bcard"><b>🧩 La breadboard</b>È una basetta con tanti fori. I fori sono collegati a gruppi: ogni <b>colonna di 5 fori</b> (a–e oppure f–j) è collegata dentro. Le righe lunghe <b style="color:#D33">+</b> e <b style="color:#36C">−</b> ai bordi (i <b>binari</b>) sono collegate per tutta la lunghezza. <i>Passa il mouse su un foro: vedrai in verde quelli collegati.</i></div>
+ <div class="bcard"><b>💡 Il LED</b>Ha due gambe: la <b>piegata (+, anodo)</b> va verso il pin di Arduino, la <b>dritta (−, catodo)</b> verso GND. Ha sempre bisogno di una <b>resistenza da 220 Ω</b>, che frena la corrente: senza, si brucerebbe.</div>
+ <div class="bcard"><b>🔘 Il pulsante</b>Si mette <b>a cavallo della scanalatura</b> centrale. Un lato va al <b>5V</b>, l'altro al <b>pin</b>. Dal pin parte una <b>resistenza da 10 kΩ verso GND</b> (pull-down): così, se non premi, il pin legge LOW con certezza.</div>
+ <div class="bcard"><b>🖥 Il monitor seriale</b><code>Serial.println("TESTO");</code> scrive un testo e va a capo. Il testo va <b>tra virgolette</b>.</div>`,
+ steps:[
+  {t:'Porta 5V e GND sulla breadboard',d:'Fai un filo dal pin <b>5V</b> di Arduino al binario <b style="color:#D33">+</b> e uno da un pin <b>GND</b> al binario <b style="color:#36C">−</b>. Per fare un filo: <b>clicca un pin, poi clicca il foro</b> di arrivo.',
+   why:'Così il 5V e il GND arrivano lungo tutta la breadboard e ogni componente può prenderli da vicino, con fili corti e ordinati.',hint:'Il 5V e i GND sono nella fila di pin in basso di Arduino (POWER). C\'è un GND anche in alto, vicino al pin 13.',
+   check:c=>c.an.shorts?no('⚠ Cortocircuito: 5V e GND sono collegati insieme.'):c.an.rails.plus&&c.an.rails.minus?ok('5V sul binario + e GND sul binario − ✓'):no(!c.an.rails.plus?'Manca il filo dal <b>5V</b> al binario <b>+</b>.':'Manca il filo da <b>GND</b> al binario <b>−</b>.')},
+  {t:'Inserisci il LED giallo',d:'Trascina un <b>LED</b> dal pannello Componenti sulla breadboard (righe a–e). Selezionalo e scegli il colore <b>giallo</b>.',
+   why:'Le due gambe devono stare in <b>colonne diverse</b>: se fossero nella stessa colonna sarebbero collegate tra loro e la corrente salterebbe il LED.',hint:'Lascia il LED con le gambe nei fori: il punto rosso sulla gamba significa "non infilata".',
+   check:c=>{const L=c.an.leds.filter(l=>l.color==='giallo');if(!L.length)return chkLED(c,'giallo');const l=L[0];if(!l.inBoard)return no('Infila bene le gambe del LED nei fori.');if(l.same)return no('Le gambe sono nella stessa colonna: spostalo.');return ok('LED giallo inserito ✓')}},
+  {t:'La resistenza del LED (220 Ω) verso GND',d:'Metti una <b>resistenza</b> dalla colonna della gamba <b>dritta (−)</b> del LED fino al binario <b>−</b>. Selezionala e imposta <b>220 Ω</b>. Usa il tasto <b>R</b> per ruotarla in verticale.',
+   why:'La resistenza da 220 Ω limita la corrente: il LED si accende bene e non si brucia. Va <b>in serie</b>, cioè sulla stessa strada della corrente.',hint:'Ruota la resistenza (R) e mettila con una gamba nella colonna del catodo e l\'altra nel binario − in alto.',
+   check:c=>{const l=c.an.leds.find(x=>x.color==='giallo');if(!l)return no('Prima inserisci il LED giallo.');if(l.reversed)return chkLED(c,'giallo');if(!l.gnd)return no('La gamba dritta (−) del LED deve arrivare al binario − passando per la resistenza.');if(!l.res)return no('Il LED arriva a GND senza resistenza: aggiungi la resistenza da 220 Ω.');if(l.res>1000||l.res<100)return no(`La resistenza è da ${fmtR(l.res)}: impostala a <b>220 Ω</b>.`);return ok(`Resistenza da ${fmtR(l.res)} ✓`)}},
+  {t:'Collega il LED a un pin digitale',d:'Fai un filo dalla colonna della gamba <b>piegata (+)</b> del LED a un pin digitale, per esempio il <b>12</b>. Il pin lo scegli tu!',
+   why:'Il pin, in OUTPUT, darà 5 V (LED acceso) oppure 0 V (LED spento): è così che Arduino comanda il LED. Evita i pin 0 e 1: servono al monitor seriale.',hint:'I pin digitali sono nella fila in alto di Arduino, numerati da 0 a 13.',
+   check:c=>chkLED(c,'giallo')},
+  {t:'Metti il pulsante a cavallo della scanalatura',d:'Trascina un <b>pulsante</b> e posizionalo a cavallo della scanalatura centrale: due gambe nella riga e, due nella riga f.',
+   why:'Così le due coppie di gambe del pulsante finiscono in colonne separate: premendo, il pulsante unisce la parte sopra con quella sotto.',hint:'Avvicinalo alla scanalatura grigia al centro della breadboard: si aggancia da solo ai fori.',
+   check:c=>{const b=c.an.btns[0];return !b?no('Trascina un pulsante sulla breadboard.'):!b.inBoard?no('Mettilo a cavallo della scanalatura: tutte e 4 le gambe nei fori.'):ok('Pulsante inserito ✓')}},
+  {t:'Collega il pulsante con la pull-down',d:'1) Un filo dalla colonna di <b>sopra</b> del pulsante al binario <b>+</b> (5V).<br>2) Un filo dalla colonna di <b>sotto</b> a un pin digitale, per esempio il <b>2</b>.<br>3) Una <b>resistenza da 10 kΩ</b> dalla colonna di sotto al binario <b>−</b>.',
+   why:'Premuto: il pin riceve il 5V e legge <b>HIGH</b>. Rilasciato: il pin arriva a GND attraverso la 10 kΩ e legge <b>LOW</b>. Senza la 10 kΩ il pin sarebbe <b>flottante</b> e leggerebbe valori a caso.',hint:'La colonna di sotto deve avere tre cose: la gamba del pulsante, il filo verso il pin e la resistenza da 10 kΩ.',
+   check:c=>chkBTN(c)},
+  {t:'Scrivi il setup()',d:'Apri il pannello <b>Codice</b>. Nel <code>setup()</code> scrivi: <code>pinMode(…, INPUT);</code> per il pulsante, <code>pinMode(…, OUTPUT);</code> per il LED e <code>Serial.begin(9600);</code>. Consiglio: dai un <b>nome</b> ai pin con le variabili (es. <code>int pulsante = 2;</code>).',
+   why:'Il setup() si esegue una volta: prepara i pin. Il pin del pulsante deve <b>ascoltare</b> (INPUT), quello del LED deve <b>parlare</b> (OUTPUT). Serial.begin apre la comunicazione con il PC.',hint:'Usa gli stessi numeri di pin che hai collegato nel circuito: li trovi nel riquadro "I tuoi pin".',
+   check:c=>chkSetup(c),code:true},
+  {t:'Scrivi il loop() con if / else',d:'Nel <code>loop()</code>: leggi il pulsante con <code>digitalRead</code>, poi <code>if (stato == HIGH)</code> accendi il LED e scrivi <b>LUCE ACCESA</b>, altrimenti (<code>else</code>) spegnilo e scrivi <b>LUCE SPENTA</b>.',
+   why:'Il loop() si ripete migliaia di volte al secondo: ogni volta Arduino legge il pulsante e decide. Si usa <b>==</b> per confrontare (con un solo = la condizione sarebbe sempre vera).',hint:'Aggiungi un <code>delay(100);</code> in fondo al loop: il monitor seriale si legge meglio.',
+   check:c=>c.test,code:true},
+  {t:'Commenta ogni riga',d:'Alla fine di ogni riga di codice scrivi <code>//</code> e spiega con parole tue cosa fa.',why:'Nel compito ogni riga va commentata: il commento dimostra che hai capito. Arduino ignora tutto quello che c\'è dopo //.',hint:'Esempio: <code>pinMode(2, INPUT);   // il pulsante ascolta</code>',check:c=>chkComments(c),code:true},
+  {t:'Avvia la simulazione e prova',d:'Premi <b>▶ Avvia simulazione</b>, poi <b>tieni premuto il pulsante</b> nel circuito con il mouse. Guarda il LED e il monitor seriale.',
+   why:'Provare è il modo per essere sicuri: il circuito e il codice devono funzionare insieme.',hint:'Il pulsante si preme cliccandoci sopra e tenendo premuto il tasto del mouse.',check:c=>c.flags.simPressOn?ok('Hai provato: funziona! ✓'):no('Avvia la simulazione e tieni premuto il pulsante finché il LED si accende.')}],
+ test:t=>{const r=t.run([[1000,true],[2000,false]],3000);const L=t.L;
+   if(r.on('giallo',800))return no('Con il pulsante <b>rilasciato</b> il LED giallo è acceso: dovrebbe essere spento.');
+   if(!r.on('giallo',1800))return no('Quando <b>premi</b> il pulsante il LED giallo resta spento. Controlla l\'if e il digitalWrite.');
+   if(r.on('giallo',2800))return no('Quando rilasci il pulsante il LED resta acceso: nell\'else devi spegnerlo con LOW.');
+   if(!has(r.lines(1100,1990),'LUCE ACCESA'))return no('Quando premi, sul monitor deve comparire <b>LUCE ACCESA</b> (con Serial.println e il testo tra virgolette).');
+   if(!has(r.lines(0,990),'LUCE SPENTA'))return no('Quando non premi, sul monitor deve comparire <b>LUCE SPENTA</b>.');
+   return ok('Il programma funziona come nella tabella ✓')},
+ q:{q:'Perché nel circuito serve la resistenza da 10 kΩ tra il pin del pulsante e GND?',o:['Per far accendere il LED più forte','Perché senza di lei, a pulsante rilasciato, il pin non è collegato a niente: è flottante e legge valori a caso','Per non bruciare il pulsante','Perché Arduino non funziona senza resistenze'],a:1,
+   why:'Senza la resistenza, con il pulsante rilasciato il pin è <b>flottante</b>: fa da antenna e legge HIGH o LOW a caso. La pull-down da 10 kΩ lo tiene a LOW con certezza. È la stessa domanda del compito!'}},
+{id:'e2',part:1,n:2,icon:'🧊',title:'La luce del frigorifero',colors:['verde'],
+ sub:'La logica al contrario e il pin flottante',
+ learn:['Montare il circuito con meno aiuti','Invertire la logica: il LED si spegne quando premi','Vedere con i tuoi occhi il pin flottante'],
+ table:[['Pulsante (porta)','LED verde','Monitor seriale'],['Non premuto','acceso','PORTA CHIUSA'],['Premuto','spento','PORTA APERTA']],
+ before:`<div class="bcard"><b>🔄 Al contrario</b>Il circuito è lo stesso dell'esercizio 1. Cambia solo il codice: nell'<code>if</code> il LED si <b>spegne</b>, nell'<code>else</code> si <b>accende</b>. Basta scambiare HIGH e LOW nei due rami.</div>
+ <div class="bcard"><b>👻 Il pin flottante</b>Alla fine farai un esperimento: toglierai la resistenza da 10 kΩ e guarderai cosa legge Arduino. Ti servirà per rispondere alla domanda del compito.</div>`,
+ steps:[
+  {t:'Monta LED verde e pulsante',d:'Questa volta il circuito lo monti da solo/a: <b>LED verde</b> con resistenza da 220 Ω e un pin; <b>pulsante</b> con 5V, pin e pull-down da 10 kΩ. Ricordati di 5V e GND sui binari!',
+   why:'È lo stesso schema dell\'esercizio 1: ripeterlo da soli è il modo migliore per ricordarlo al compito.',hint:'Se non ricordi, riapri l\'esercizio 1 o premi "Mostrami come".',check:c=>chkCircuit(c)},
+  {t:'Scrivi il setup()',d:'pinMode per pulsante (INPUT) e LED (OUTPUT), più Serial.begin(9600).',why:'Ogni pin usato va preparato nel setup().',hint:'Controlla i numeri dei pin nel riquadro "I tuoi pin".',check:c=>chkSetup(c),code:true},
+  {t:'Scrivi il loop() al contrario',d:'Se il pulsante è premuto: LED <b>spento</b> e <b>PORTA APERTA</b>. Altrimenti: LED <b>acceso</b> e <b>PORTA CHIUSA</b>.',
+   why:'Come nel compito (parte b): il circuito non cambia, si scambia solo cosa succede nei due rami dell\'if.',hint:'Nell\'if scrivi digitalWrite(led, LOW), nell\'else digitalWrite(led, HIGH).',check:c=>c.test,code:true},
+  {t:'Commenta ogni riga',d:'Ogni riga con il suo <code>//</code>.',why:'Nel compito il codice senza commenti perde punti.',hint:'Un commento breve basta: "// spengo il LED".',check:c=>chkComments(c),code:true},
+  {t:'Esperimento: togli la pull-down',d:'Seleziona la <b>resistenza da 10 kΩ</b> e premi <b>🗑 Elimina</b> (o Canc). Avvia la simulazione <b>senza toccare il pulsante</b> e guarda il monitor seriale e il LED.',
+   why:'Senza resistenza il pin non è collegato a niente quando il pulsante è rilasciato: vedrai i messaggi cambiare <b>a caso</b>. È il pin flottante!',hint:'Il simulatore ti mostra anche un avviso giallo quando un pin è flottante.',check:c=>c.flags.floatSim?ok('Hai visto il pin flottante ✓'):no('Elimina la resistenza da 10 kΩ e avvia la simulazione.')},
+  {t:'Rimetti la resistenza',d:'Riaggiungi la resistenza da <b>10 kΩ</b> tra il pin del pulsante e GND (o premi Ctrl+Z) e riprova: ora i messaggi sono stabili.',why:'Con la pull-down il pin legge LOW con certezza quando non premi.',hint:'Ctrl+Z annulla l\'ultima modifica.',check:c=>c.flags.floatSim&&chkBTN(c).ok?ok('Pull-down rimessa ✓'):no('Prima fai l\'esperimento, poi rimetti la resistenza da 10 kΩ.')}],
+ test:t=>{const r=t.run([[1000,true],[2000,false]],3000);
+   if(!r.on('verde',800))return no('Con il pulsante <b>non premuto</b> il LED verde deve essere <b>acceso</b>.');
+   if(r.on('verde',1800))return no('Quando <b>premi</b> il pulsante il LED verde deve <b>spegnersi</b>.');
+   if(!has(r.lines(1100,1990),'PORTA APERTA'))return no('Quando premi deve comparire <b>PORTA APERTA</b>.');
+   if(!has(r.lines(0,990),'PORTA CHIUSA'))return no('Quando non premi deve comparire <b>PORTA CHIUSA</b>.');
+   return ok('Logica al contrario corretta ✓')},
+ q:{q:'Senza la resistenza da 10 kΩ, che cosa hai visto sul monitor seriale con il pulsante rilasciato?',o:['Sempre PORTA CHIUSA','Sempre PORTA APERTA','Messaggi che cambiano a caso, perché il pin è flottante','Nessun messaggio'],a:2,
+   why:'Il pin collegato a niente fa da <b>antenna</b>: legge HIGH e LOW a caso. Per questo serve la resistenza di pull-down da 10 kΩ tra pin e GND.'}},
+{id:'e3',part:2,n:3,icon:'🚧',title:'La luce del cantiere',colors:['verde','giallo'],
+ sub:'Un lampeggio dentro l\'if, una luce fissa nell\'else',
+ learn:['Usare due LED nello stesso circuito','Scrivere un lampeggio dentro il blocco if','Tenere una luce fissa nel blocco else'],
+ table:[['Pulsante','LED verde','LED giallo','Monitor seriale'],['Rilasciato','acceso fisso','spento','STRADA LIBERA'],['Premuto','spento','lampeggia: 500 ms acceso, 500 ms spento','LAVORI IN CORSO']],
+ before:`<div class="bcard"><b>📦 Più istruzioni nello stesso blocco</b>Tra le graffe <code>{ }</code> dell'if puoi scrivere tante istruzioni: Arduino le esegue <b>in ordine, dall'alto in basso</b>.</div>
+ <div class="bcard"><b>✨ Un lampeggio</b>Un lampeggio sono 4 righe: <code>digitalWrite(led, HIGH);</code> <code>delay(500);</code> <code>digitalWrite(led, LOW);</code> <code>delay(500);</code>. Se il pulsante resta premuto, il loop ricomincia e il LED continua a lampeggiare.</div>
+ <div class="bcard"><b>🎯 Ogni ramo sistema tutti i LED</b>Nell'if spegni il verde, nell'else spegni il giallo: così nessun LED resta acceso "per sbaglio" dal giro precedente.</div>`,
+ steps:[
+  {t:'Monta 2 LED e il pulsante',d:'<b>LED verde</b> e <b>LED giallo</b>, ognuno con la sua resistenza da 220 Ω e il suo pin. <b>Pulsante</b> con 5V, pin e pull-down da 10 kΩ.',why:'Ogni LED ha bisogno della <b>sua</b> resistenza e del <b>suo</b> pin, così Arduino può comandarli separatamente.',hint:'Metti i LED in colonne lontane tra loro, così i fili non si confondono.',check:c=>chkCircuit(c)},
+  {t:'Scrivi il setup()',d:'Tre pinMode (pulsante INPUT, due LED OUTPUT) e Serial.begin(9600). Dai ai pin nomi chiari: <code>ledVerde</code>, <code>ledGiallo</code>.',why:'Con i nomi dei colori non ti confondi tra i numeri dei pin.',hint:'int ledVerde = …; int ledGiallo = …;',check:c=>chkSetup(c),code:true},
+  {t:'Il ramo else: verde fisso',d:'Nell\'<code>else</code>: giallo <b>LOW</b>, verde <b>HIGH</b>, messaggio <b>STRADA LIBERA</b>.',why:'Quando nessuno preme, la situazione è tranquilla: verde acceso e fermo.',hint:'Scrivi prima if (digitalRead(pulsante) == HIGH) { } else { } e poi riempi l\'else.',check:c=>c.testA,code:true},
+  {t:'Il ramo if: giallo lampeggiante',d:'Nell\'<code>if</code>: verde <b>LOW</b>, messaggio <b>LAVORI IN CORSO</b>, poi il lampeggio del giallo: HIGH, 500 ms, LOW, 500 ms.',why:'Tutto il lampeggio sta <b>dentro l\'if</b>, così succede solo mentre premi. È lo stesso schema del compito (esercizio 2).',hint:'delay(500) = mezzo secondo.',check:c=>c.test,code:true},
+  {t:'Commenta ogni riga',d:'Ogni riga con il suo <code>//</code>.',why:'Richiesto dal compito.',hint:'Usa i nomi dei colori nei commenti.',check:c=>chkComments(c),code:true},
+  {t:'Prova in simulazione',d:'Avvia la simulazione e tieni premuto il pulsante per qualche secondo.',why:'Devi vedere il giallo lampeggiare e il verde spento.',hint:'Tieni premuto con il mouse.',check:c=>c.flags.simPressOn?ok('Provato ✓'):no('Avvia la simulazione e tieni premuto il pulsante.')}],
+ test:t=>{const r=t.run([[1000,true],[4000,false]],5500);
+   if(!r.on('verde',800)||r.on('giallo',800))return no('Con il pulsante rilasciato: verde <b>acceso</b> e giallo <b>spento</b>.');
+   if(!has(r.lines(0,990),'STRADA LIBERA'))return no('Con il pulsante rilasciato deve comparire <b>STRADA LIBERA</b>.');
+   return ok('Ramo else corretto ✓')},
+ test2:t=>{const r=t.run([[1000,true],[4000,false]],5500);
+   if(r.anyOn('verde',1200,3900))return no('Mentre premi, il LED verde deve restare <b>spento</b>.');
+   const e=r.edges('giallo',1000,4000);if(e.rise<2)return no('Mentre premi, il LED giallo deve <b>lampeggiare</b> (acceso 500 ms, spento 500 ms). Ora non lampeggia.');
+   if(!has(r.lines(1000,4000),'LAVORI IN CORSO'))return no('Mentre premi deve comparire <b>LAVORI IN CORSO</b>.');
+   if(!r.on('verde',5400))return no('Dopo aver rilasciato, il verde deve tornare acceso.');
+   return ok('Lampeggio corretto ✓')},
+ q:{q:'Perché il lampeggio del giallo va scritto tutto dentro il blocco if?',o:['Perché fuori dall\'if il codice non funziona','Perché deve succedere solo mentre il pulsante è premuto','Perché il delay funziona solo dentro l\'if','Non importa dove lo scrivi'],a:1,
+   why:'L\'if esegue le sue istruzioni <b>solo quando la condizione è vera</b>, cioè mentre premi. Nell\'else ci va quello che deve succedere quando non premi: il verde fisso.'}},
+{id:'e4',part:2,n:4,icon:'🍲',title:'Il forno a microonde',colors:['verde','rosso'],
+ sub:'Aspettare prima di agire e capire cosa fa Arduino durante il delay',
+ learn:['Mettere un\'attesa (delay) prima di un\'azione','Scrivere più lampeggi uno dopo l\'altro','Capire che durante il delay Arduino non legge il pulsante'],
+ table:[['Pulsante','LED verde','LED rosso','Monitor seriale'],['Rilasciato','acceso','spento','IN ATTESA'],['Premuto','spento','aspetta 2 s, poi 3 lampeggi (300 ms acceso, 300 ms spento)','COTTURA... poi DIN DON!']],
+ before:`<div class="bcard"><b>⏳ Aspettare prima di agire</b><code>delay(2000);</code> fa aspettare Arduino 2 secondi. Se lo metti <b>prima</b> dei lampeggi, l'allarme parte dopo l'attesa: come nel compito, dove l'allarme scatta dopo 4 secondi.</div>
+ <div class="bcard"><b>😴 Durante il delay Arduino "dorme"</b>Mentre aspetta, Arduino <b>non fa nient'altro</b>: non legge il pulsante e non cambia i LED. Lo scoprirai con un esperimento.</div>
+ <div class="bcard"><b>🔁 Tre lampeggi</b>Senza strumenti nuovi: scrivi tre volte le 4 righe del lampeggio, una sotto l'altra.</div>`,
+ steps:[
+  {t:'Monta LED verde, LED rosso e pulsante',d:'Due LED con le loro resistenze da 220 Ω e un pulsante con pull-down da 10 kΩ.',why:'Stesso schema dell\'esercizio 3: ormai lo sai fare!',hint:'Ricordati dei binari 5V e GND.',check:c=>chkCircuit(c)},
+  {t:'Scrivi il setup()',d:'pinMode per i 3 pin e Serial.begin(9600).',why:'Ogni pin va preparato.',hint:'Nomi chiari: ledVerde, ledRosso.',check:c=>chkSetup(c),code:true},
+  {t:'Scrivi il loop()',d:'<b>Else</b>: rosso LOW, verde HIGH, <b>IN ATTESA</b>.<br><b>If</b>: verde LOW, <b>COTTURA...</b>, <code>delay(2000)</code>, <b>DIN DON!</b>, poi 3 lampeggi del rosso da 300 ms.',why:'L\'ordine delle righe è l\'ordine in cui succedono le cose: prima l\'attesa, poi il messaggio, poi i lampeggi.',hint:'Un lampeggio: HIGH, delay(300), LOW, delay(300). Ripetilo 3 volte.',check:c=>c.test,code:true},
+  {t:'Commenta ogni riga',d:'Ogni riga con il suo <code>//</code>.',why:'Richiesto dal compito.',hint:'"// 1° lampeggio", "// 2° lampeggio"...',check:c=>chkComments(c),code:true},
+  {t:'Esperimento: rilascia durante l\'attesa',d:'Avvia la simulazione. Premi il pulsante e <b>rilascialo subito</b>, mentre Arduino sta aspettando. Guarda: il verde si riaccende subito?',why:'Questa è la domanda del compito (esercizio 2): devi averla vista con i tuoi occhi.',hint:'Clic breve sul pulsante, poi guarda i LED per 4 secondi.',check:c=>c.flags.quickRelease?ok('Esperimento fatto ✓'):no('Avvia la simulazione e fai un clic breve sul pulsante.')}],
+ test:t=>{const r=t.run([[1000,true],[1300,false]],6000);
+   if(!r.on('verde',800)||r.on('rosso',800))return no('Con il pulsante rilasciato: verde <b>acceso</b>, rosso <b>spento</b>.');
+   if(!has(r.lines(0,990),'IN ATTESA'))return no('Con il pulsante rilasciato deve comparire <b>IN ATTESA</b>.');
+   if(r.anyOn('verde',1200,2900)||r.anyOn('rosso',1200,2900))return no('Dopo aver premuto, per 2 secondi i LED devono essere <b>spenti</b> (il forno cuoce).');
+   if(!has(r.lines(1000,1400),'COTTURA'))return no('Appena premi deve comparire <b>COTTURA...</b>');
+   const e=r.edges('rosso',2900,4900);if(e.rise!==3)return no(`Dopo l'attesa il rosso deve fare <b>3 lampeggi</b> da 300 ms. Ne vedo ${e.rise}.`);
+   if(!has(r.lines(2900,3300),'DIN DON'))return no('Dopo l\'attesa deve comparire <b>DIN DON!</b>');
+   if(!r.on('verde',5200))return no('Finiti i lampeggi (pulsante rilasciato) il verde deve tornare acceso.');
+   return ok('Il forno funziona ✓')},
+ q:{q:'Hai rilasciato il pulsante durante l\'attesa. Il verde si è riacceso subito?',o:['Sì, subito','No: si è riacceso solo alla fine dei lampeggi, perché durante i delay Arduino aspetta e non legge il pulsante','No, non si riaccende più','Dipende dal colore del LED'],a:1,
+   why:'Durante un <code>delay</code> Arduino <b>non fa nient\'altro</b>. Il pulsante viene letto di nuovo solo quando il loop ricomincia, cioè dopo l\'ultimo delay. Per questo c\'è un <b>ritardo</b>.'}},
+{id:'e5',part:3,n:5,icon:'🅿️',title:'La sbarra del parcheggio',colors:['rosso','giallo','verde'],
+ sub:'Una sequenza lunga con tre LED, nell\'ordine giusto',
+ learn:['Gestire tre LED con nomi chiari','Scrivere una sequenza di passi dentro un unico if','Rispettare tempi e messaggi passo per passo'],
+ table:[['Passo','Rosso','Giallo','Verde','Monitor seriale'],['Normale','acceso','spento','spento',''],['1) premi: ancora 1 s','acceso','spento','spento',''],['2) per 1 s','spento','acceso','spento',''],['3) per 2 s','spento','spento','acceso','SBARRA ALZATA'],['4) 3 lampeggi','spento','spento','250 ms spento / 250 ms acceso',''],['5) fine','acceso','spento','spento','SBARRA ABBASSATA']],
+ before:`<div class="bcard"><b>🗂 Una sequenza = una lista di passi</b>Scrivi i passi <b>uno sotto l'altro</b> dentro l'if, nello stesso ordine della tabella. Ogni passo: cosa spegni, cosa accendi, quanto aspetti.</div>
+ <div class="bcard"><b>🏷 Dai un nome ai LED</b>Con tre LED è facile confondersi: usa <code>ledRosso</code>, <code>ledGiallo</code>, <code>ledVerde</code> e scrivi il colore anche nei commenti.</div>
+ <div class="bcard"><b>🧭 Prima spegni, poi accendi</b>A ogni cambio di passo, spegni il LED vecchio e accendi quello nuovo: come un vero semaforo.</div>`,
+ steps:[
+  {t:'Monta tre LED e il pulsante',d:'LED <b>rosso</b>, <b>giallo</b> e <b>verde</b>, ognuno con resistenza da 220 Ω e il suo pin. Pulsante con pull-down.',why:'Tre LED = tre pin diversi e tre resistenze.',hint:'Metti i LED in fila, distanziati, nell\'ordine rosso-giallo-verde.',check:c=>chkCircuit(c)},
+  {t:'Variabili con i nomi dei colori e setup()',d:'Crea <code>int ledRosso = …;</code>, <code>int ledGiallo = …;</code>, <code>int ledVerde = …;</code> e nel setup() i pinMode e Serial.begin.',why:'Con i nomi dei colori il codice si legge come una frase e non sbagli pin.',hint:'Scrivi i nomi esattamente con i colori: rosso, giallo, verde.',check:c=>{const n=['rosso','giallo','verde'].filter(x=>new RegExp('int\\s+\\w*'+x,'i').test(c.code)).length;if(n<3)return no('Dai ai LED variabili con il nome del colore: es. <code>int ledRosso = 12;</code>');return chkSetup(c)},code:true},
+  {t:'La situazione normale (else)',d:'Nell\'else: <b>rosso acceso</b>, giallo e verde <b>spenti</b>.',why:'Quando nessuno chiama, la sbarra è abbassata: rosso.',hint:'Tre digitalWrite nell\'else.',check:c=>c.testA,code:true},
+  {t:'La sequenza (if)',d:'Dentro l\'if scrivi i passi 1–5 della tabella con i tempi giusti e i due messaggi.',why:'Arduino esegue i passi in ordine: i delay decidono quanto dura ogni passo. È lo schema del semaforo del compito (esercizio 3).',hint:'Passo 4: verde LOW, delay(250), verde HIGH, delay(250) — per 3 volte.',check:c=>c.test,code:true},
+  {t:'Commenta ogni riga',d:'Usa i colori e i numeri dei passi nei commenti.',why:'Con 3 LED i commenti ti salvano dalla confusione.',hint:'"// 2) spengo il ROSSO"',check:c=>chkComments(c),code:true},
+  {t:'Prova in simulazione',d:'Avvia, fai un clic sul pulsante e guarda tutta la sequenza fino alla fine.',why:'Controlla che tempi e messaggi siano giusti.',hint:'La sequenza dura circa 5,5 secondi.',check:c=>c.flags.simPressOn?ok('Provato ✓'):no('Avvia la simulazione e premi il pulsante.')}],
+ test:t=>{const r=t.run([[1000,true],[1300,false]],8000);
+   if(!r.on('rosso',800)||r.on('giallo',800)||r.on('verde',800))return no('Situazione normale: solo il <b>rosso acceso</b>.');return ok('Situazione normale corretta ✓')},
+ test2:t=>{const r=t.run([[1000,true],[1300,false]],8000);
+   if(!r.on('rosso',1600)||r.on('giallo',1600))return no('Passo 1: appena premi, il rosso resta acceso ancora <b>1 secondo</b>.');
+   if(r.on('rosso',2500)||!r.on('giallo',2500))return no('Passo 2: dopo 1 s si spegne il rosso e si accende il <b>giallo</b> per 1 secondo.');
+   if(r.on('giallo',4000)||!r.on('verde',4000))return no('Passo 3: si spegne il giallo e si accende il <b>verde</b> per 2 secondi.');
+   if(!has(r.lines(2900,3300),'SBARRA ALZATA'))return no('Passo 3: quando si accende il verde deve comparire <b>SBARRA ALZATA</b>.');
+   const e=r.edges('verde',4900,6600);if(e.fall<3)return no('Passo 4: il verde deve <b>lampeggiare 3 volte</b> (250 ms spento, 250 ms acceso).');
+   if(!r.on('rosso',7000)||r.on('verde',7000))return no('Passo 5: alla fine si spegne il verde e si riaccende il <b>rosso</b>.');
+   if(!has(r.lines(6300,7200),'SBARRA ABBASSATA'))return no('Passo 5: deve comparire <b>SBARRA ABBASSATA</b>.');
+   return ok('Sequenza perfetta ✓')},
+ q:{q:'Se un\'altra auto preme il pulsante mentre il verde è acceso, Arduino se ne accorge subito?',o:['Sì, sempre','No: è dentro i delay della sequenza e leggerà il pulsante solo quando il loop ricomincia','Sì, ma solo se preme forte','No, il pulsante si rompe'],a:1,
+   why:'Durante la sequenza Arduino esegue i <code>delay</code> uno dopo l\'altro e <b>non legge</b> il pulsante. Lo leggerà al giro successivo del loop. È la domanda dell\'esercizio 3 del compito!'}},
+{id:'e6',part:3,n:6,icon:'🎟',title:'Il contapersone del museo',colors:['verde'],
+ sub:'Una variabile che conta e un messaggio con il numero',
+ learn:['Creare una variabile contatore','Aumentarla di 1 con visitatori = visitatori + 1','Scrivere testo e numero sulla stessa riga con Serial.print e Serial.println'],
+ table:[['Ogni volta che premi','LED verde','Monitor seriale'],['1ª pressione','acceso 0,5 s','Visitatore numero 1'],['2ª pressione','acceso 0,5 s','Visitatore numero 2']],
+ before:`<div class="bcard"><b>📦 Una variabile che conta</b><code>int visitatori = 0;</code> crea una "scatola" che parte da 0. Va scritta <b>in alto, fuori</b> da setup e loop, così ricorda il valore tra un giro e l'altro.</div>
+ <div class="bcard"><b>➕ Aggiungere 1</b><code>visitatori = visitatori + 1;</code> si legge: "il nuovo valore è il vecchio più 1". Qui il segno <b>=</b> serve proprio ad assegnare!</div>
+ <div class="bcard"><b>🖨 Testo e numero insieme</b><code>Serial.print("Visitatore numero ");</code> scrive senza andare a capo, poi <code>Serial.println(visitatori);</code> aggiunge il numero e va a capo. Nel compito ti serve per il <b>bonus</b>!</div>`,
+ steps:[
+  {t:'Monta LED verde e pulsante',d:'LED verde con 220 Ω e pin; pulsante con pull-down da 10 kΩ.',why:'Il solito schema: ormai è facile!',hint:'Ricordati i binari 5V e GND.',check:c=>chkCircuit(c)},
+  {t:'Crea la variabile contatore',d:'In alto, prima del setup(), scrivi <code>int visitatori = 0;</code>',why:'Fuori dal loop la variabile non si azzera a ogni giro: tiene il conto.',hint:'Puoi chiamarla come vuoi, ma il nome deve dire cosa conta.',check:c=>/^\s*int\s+\w+\s*=\s*0\s*;/m.test(c.code.split(/void\s+setup/)[0]||'')?ok('Contatore creato ✓'):no('Scrivi in alto, prima di void setup(), una variabile che parte da 0: <code>int visitatori = 0;</code>'),code:true},
+  {t:'Scrivi il setup()',d:'pinMode del pulsante e del LED, Serial.begin(9600).',why:'Come sempre.',hint:'Controlla i pin nel riquadro.',check:c=>chkSetup(c),code:true},
+  {t:'Conta e scrivi il numero',d:'Nell\'if: <code>visitatori = visitatori + 1;</code>, poi <code>Serial.print("Visitatore numero ");</code> e <code>Serial.println(visitatori);</code>, poi LED acceso 500 ms, spento 500 ms.',why:'L\'ultimo delay(500) dà il tempo di togliere il dito: così una pressione breve conta una volta sola.',hint:'Nota lo spazio dopo "numero " dentro le virgolette.',check:c=>c.test,code:true},
+  {t:'Commenta ogni riga',d:'Ogni riga con il suo <code>//</code>.',why:'Richiesto dal compito.',hint:'"// aggiungo 1 al contatore"',check:c=>chkComments(c),code:true},
+  {t:'Prova: conta 3 visitatori',d:'Avvia la simulazione e fai <b>3 clic brevi</b> sul pulsante. Poi prova a <b>tenerlo premuto</b> a lungo: cosa succede al numero?',why:'Ti prepara alla domanda finale.',hint:'Guarda il monitor seriale.',check:c=>c.flags.presses>=3?ok('Provato ✓'):no(`Avvia la simulazione e premi il pulsante 3 volte (finora: ${c.flags.presses||0}).`)}],
+ test:t=>{const r=t.run([[1000,true],[1300,false],[3000,true],[3300,false]],4500);
+   const ls=r.lines(0,4500);const n1=ls.findIndex(l=>/visitatore numero\s*1\b/i.test(l)),n2=ls.findIndex(l=>/visitatore numero\s*2\b/i.test(l));
+   if(n1<0)return no('Alla prima pressione deve comparire <b>Visitatore numero 1</b> su una sola riga (Serial.print per il testo, Serial.println per il numero).');
+   if(n2<0)return no('Alla seconda pressione deve comparire <b>Visitatore numero 2</b>: il contatore deve aumentare di 1.');
+   if(ls.filter(l=>/visitatore numero/i.test(l)).length>2)return no('Con 2 pressioni brevi il contatore è aumentato più di 2 volte: aggiungi una pausa (delay) dopo il conteggio.');
+   if(!r.on('verde',1200))return no('Quando conti un visitatore il LED verde deve accendersi.');
+   return ok('Il contatore funziona ✓')},
+ q:{q:'Se tieni premuto il pulsante a lungo, cosa succede al contatore?',o:['Conta una volta sola','Continua ad aumentare (circa 1 ogni secondo), perché a ogni giro del loop il pulsante risulta ancora premuto','Torna a zero','Si blocca Arduino'],a:1,
+   why:'Il loop ricomincia ogni secondo (500 + 500 ms) e, se il pulsante è ancora premuto, l\'if è di nuovo vero: il contatore aumenta ancora. Per questo il compito chiede di contare le <b>pressioni</b>: premi e rilascia!'}}
+];
+
+/* =====================================================
+   APPLICAZIONE: codice, simulazione, verifiche, guida
+   ===================================================== */
+const $=(s,e=document)=>e.querySelector(s),$$=(s,e=document)=>[...e.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function hl(src){const re=/(\/\/[^\n]*)|("[^"\n]*")|\b(void|int|if|else|long|bool|boolean|byte|const)\b|\b(HIGH|LOW|OUTPUT|INPUT_PULLUP|INPUT|LED_BUILTIN|true|false)\b|(Serial\.begin|Serial\.println|Serial\.print|\bpinMode|\bdigitalWrite|\bdigitalRead|\bdelay|\bsetup|\bloop)\b|\b(\d+)\b/g;
+  let o='',l=0,m;while((m=re.exec(src))){o+=esc(src.slice(l,m.index));const c=m[1]?'cm':m[2]?'s':m[3]?'k':m[4]?'c':m[5]?'f':'n';o+=`<span class="${c}">${esc(m[0])}</span>`;l=re.lastIndex}return o+esc(src.slice(l))}
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const SKEY='tk_guidati_v1';let SAVE=store.get(SKEY)||{ex:{},tour:false};const persist=()=>store.set(SKEY,SAVE);
+let CUR=null;            // esercizio corrente
+let FLAGS={};            // cose fatte in simulazione
+/* ---------- suoni discreti ---------- */
+let AC=null;function beep(f=880,d=.08,v=.04){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;g.gain.setValueAtTime(v,AC.currentTime);g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.connect(g).connect(AC.destination);o.start();o.stop(AC.currentTime+d)}catch(e){}}
+const ding=()=>{beep(988,.1);setTimeout(()=>beep(1319,.18),90)};
+/* =====================================================
+   EDITOR DEL CODICE
+   ===================================================== */
+const ta=$('#code'),pre=$('#codehl'),gut=$('#gut');let errLine=0,execLine=0;
+function renderCode(){const L=ta.value.split('\n');gut.textContent=L.map((_,i)=>i+1).join('\n');
+  pre.innerHTML=L.map((l,i)=>{const n=i+1;return n===errLine?`<span class="errl">${hl(l)||' '}</span>`:n===execLine?`<span class="exl">${hl(l)||' '}</span>`:hl(l)}).join('\n')+'\n'}
+ta.addEventListener('input',()=>{errLine=0;renderCode();if(CUR){SAVE.ex[CUR.id].code=ta.value;persist()}scheduleCheck()});
+ta.addEventListener('scroll',()=>{pre.scrollTop=ta.scrollTop;pre.scrollLeft=ta.scrollLeft;gut.scrollTop=ta.scrollTop});
+ta.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();ta.setRangeText('  ',ta.selectionStart,ta.selectionEnd,'end');renderCode()}});
+function setCode(c){ta.value=c;errLine=0;renderCode();if(CUR){SAVE.ex[CUR.id].code=c;persist()}scheduleCheck()}
+/* ---------- monitor seriale ---------- */
+const mon=$('#mon');function serialOut(s){if(!s)return;let t=mon.textContent+s;const ls=t.split('\n');if(ls.length>300)t=ls.slice(-300).join('\n');mon.textContent=t;mon.scrollTop=mon.scrollHeight}
+$('#monClr').onclick=()=>mon.textContent='';
+/* ---------- pannelli ---------- */
+function showSide(which){$('#palette').hidden=which!=='comp';$('#codep').hidden=which!=='code';$('#tComp').classList.toggle('on',which==='comp');$('#tCode').classList.toggle('on',which==='code');if(which==='code')renderCode()}
+$('#tComp').onclick=()=>showSide('comp');$('#tCode').onclick=()=>showSide('code');$('#bCode').onclick=()=>showSide($('#codep').hidden?'code':'comp');
+$$('.pal').forEach(p=>p.addEventListener('pointerdown',ev=>startPaletteDrag(ev,p.dataset.t)));
+$('#zIn').onclick=()=>{ED.view.z=Math.min(3,ED.view.z*1.15);applyView()};$('#zOut').onclick=()=>{ED.view.z=Math.max(.4,ED.view.z/1.15);applyView()};$('#zFit').onclick=fitView;
+$('#bRot').onclick=rotateSel;$('#bDel').onclick=deleteSel;$('#bUndo').onclick=undo;
+/* =====================================================
+   HARDWARE COLLEGATO AL CIRCUITO
+   ===================================================== */
+class CircuitHW extends ARD.HW{
+  constructor(pr){super();this.pr=pr;this.cache=new Map();this.floatPins=new Set()}
+  nets(){const k=Object.keys(this.pr).filter(i=>this.pr[i]).join(',');if(!this.cache.has(k))this.cache.set(k,buildNets(this.pr));return this.cache.get(k)}
+  state(){return evalCircuit(this.nets(),this.mode,this.out)}
+  level(p){const v=this.state().level(p,this.mode[p]);if(v===null){this.floatPins.add(p);return this.noisy(p)}return v}
+}
+/* ---------- tester virtuale (tempo simulato) ---------- */
+function vrun(code,script,until){
+  let prog;try{prog=ARD.compile(code)}catch(e){return{err:e}}
+  const pr={},hw=new CircuitHW(pr);const btn=CIR.comps.find(c=>c.type==='btn');
+  const ev=[],lines=[];let t=0,buf='';
+  const rec=()=>{const s=hw.state();ev.push({t,l:{...s.leds}})};rec();
+  hw.onWrite=rec;
+  const gen=ARD.program(prog,hw);let si=0,steps=0;
+  try{while(t<until&&steps<400000){steps++;
+      while(si<script.length&&script[si][0]<=t){if(btn)pr[btn.id]=script[si][1];si++;rec()}
+      const r=gen.next();if(r.done)break;const y=r.value;
+      if(hw.sbuf){buf+=hw.sbuf;hw.sbuf='';const parts=buf.split('\n');buf=parts.pop();parts.forEach(l=>lines.push({t,l}))}
+      if(y.delay!==undefined){let tt=t+y.delay;while(si<script.length&&script[si][0]<=tt){t=script[si][0];if(btn)pr[btn.id]=script[si][1];si++;rec()}t=tt}
+      else if(y.tick)t+=.25}}catch(e){return{err:e}}
+  const ids=col=>CIR.comps.filter(c=>c.type==='led'&&c.color===col).map(c=>c.id);
+  const at=(col,tq)=>{let s=ev[0].l;for(const e of ev){if(e.t<=tq)s=e.l;else break}return ids(col).some(i=>s[i]>0)};
+  return{on:at,anyOn:(col,a,b)=>{for(let x=a;x<=b;x+=25)if(at(col,x))return true;return false},
+    edges:(col,a,b)=>{let prev=at(col,a),rise=0,fall=0;for(let x=a+5;x<=b;x+=5){const v=at(col,x);if(v&&!prev)rise++;if(!v&&prev)fall++;prev=v}return{rise,fall}},
+    lines:(a,b)=>lines.filter(x=>x.t>=a&&x.t<=b).map(x=>x.l)};
+}
+/* ---------- informazioni sul setup ---------- */
+function setupInfo(code){let prog;try{prog=ARD.compile(code)}catch(e){return{err:e}}
+  const hw=new CircuitHW({});const g=ARD.program(prog,hw);try{for(let i=0;i<5000;i++){const r=g.next();if(r.done||r.value.phase==='loop')break}}catch(e){return{err:e}}
+  return{modes:{...hw.mode},serial:hw.serialOn}}
+/* =====================================================
+   SIMULAZIONE IN DIRETTA
+   ===================================================== */
+let SIM=null;
+function startSim(){
+  if(SIM)return stopSim();
+  const code=ta.value;let hw=new CircuitHW(ED.pressed);
+  const banner=$('#banner');banner.hidden=true;
+  const runner=new ARD.Runner(code,hw,{slow:()=>false,stepMs:()=>500,
+    onFlush:()=>{if(hw.sbuf){serialOut(hw.sbuf);hw.sbuf='';$('#ledTX')&&$('#ledTX').setAttribute('fill','#FFB000');setTimeout(()=>$('#ledTX')&&$('#ledTX').setAttribute('fill','#665'),60)}},
+    onError:(e,compile)=>{stopSim();errLine=e.line||0;showSide('code');renderCode();$('#cerr').hidden=false;$('#cerr').innerHTML=`⛔ <b>${compile?'Errore di compilazione':'Errore'}${e.line?' alla riga '+e.line:''}</b>: ${esc(e.message)}`}});
+  $('#cerr').hidden=true;
+  if(!runner.start())return;
+  SIM={runner,hw,t0:performance.now()};showSide('code');ED.sim=true;ED.sel=null;ED.wiring=null;showInspector();redraw();
+  $('#bSim').innerHTML='■ Arresta simulazione';$('#bSim').classList.add('stop');document.body.classList.add('simon');
+  hw.onWarn=m=>{banner.hidden=false;banner.className='banner warn';banner.innerHTML='⚠ '+esc(m)};
+  FLAGS.simRuns=(FLAGS.simRuns||0)+1;const an=analyze();if(an.btns[0]&&an.btns[0].floating||an.btns[0]&&!an.btns[0].pull&&an.btns[0].pin!==null)FLAGS.floatSim=true;
+  SIM.iv=setInterval(()=>{const s=hw.state();let ch=false;for(const id in s.leds){if((ED.bright[id]||0)!==s.leds[id]){ch=true;ED.bright[id]=s.leds[id]}}if(ch)drawComps();
+    const L=$('#ledL');if(L)L.setAttribute('fill',hw.mode[13]===1&&hw.out[13]?'#FFB000':'#5a3');
+    if(Object.values(s.leds).some(b=>b>0)&&Object.values(ED.pressed).some(Boolean)){if(!FLAGS.simPressOn){FLAGS.simPressOn=true;scheduleCheck()}}
+    const msgs=[];if(s.shorts.length)msgs.push('Cortocircuito! Il 5V (o un pin HIGH) è collegato direttamente a GND.');if(s.burn.length)msgs.push('Un LED è collegato senza resistenza: nella realtà si brucerebbe!');
+    if(hw.floatPins.size)msgs.push(`Il pin ${[...hw.floatPins].join(', ')} non è collegato a niente: è flottante e legge valori a caso.`);
+    if(msgs.length){banner.hidden=false;banner.className='banner';banner.innerHTML='⚠ '+msgs.join('<br>⚠ ')}
+    const ms=performance.now()-SIM.t0;$('#simtime').textContent='Tempo di simulazione: '+new Date(ms).toISOString().substr(11,12).replace('.',',')},50);
+  $('#simtime').hidden=false;
+}
+function stopSim(){if(!SIM)return;SIM.runner.stop();clearInterval(SIM.iv);SIM=null;ED.sim=false;for(const k in ED.pressed)ED.pressed[k]=false;ED.bright={};drawComps();
+  $('#bSim').innerHTML='▶ Avvia simulazione';$('#bSim').classList.remove('stop');document.body.classList.remove('simon');$('#simtime').hidden=true;$('#banner').hidden=true;const L=$('#ledL');if(L)L.setAttribute('fill','#5a3');scheduleCheck()}
+$('#bSim').onclick=startSim;
+let pressT=0;
+ED.onPress=(id,down)=>{if(down){pressT=performance.now();FLAGS.presses=(FLAGS.presses||0)+1;beep(660,.04,.03)}else{if(performance.now()-pressT<700)FLAGS.quickRelease=true;scheduleCheck()}};
+/* =====================================================
+   VERIFICHE IN TEMPO REALE
+   ===================================================== */
+let ckT=null;function scheduleCheck(){clearTimeout(ckT);ckT=setTimeout(runChecks,250)}
+ED.onChange=()=>{if(CUR&&!ED.sim){SAVE.ex[CUR.id].cir=JSON.stringify(CIR);persist()}scheduleCheck()};
+function buildCtx(){const ex=CUR;const an=analyze();const code=ta.value;const ctx={ex,an,code,flags:FLAGS};
+  const si=setupInfo(code);if(si.err)ctx.err=si.err;else ctx.setup=si;
+  const runTest=fn=>{if(!fn)return null;const cOK=chkCircuit(ctx).ok;if(!cOK)return no('Prima completa e correggi il circuito.');if(ctx.err)return no(`Il codice ha un errore alla riga ${ctx.err.line||'?'}: ${esc(ctx.err.message)}`);const s=chkSetup(ctx);if(!s.ok)return no('Prima sistema il setup(): '+s.msg);
+    const tester={run:(sc,u)=>{const r=vrun(code,sc,u);if(r.err)throw r.err;return r}};try{return fn(tester)}catch(e){return no('Errore nel programma: '+esc(e.message))}};
+  ctx.testA=runTest(ex.test);ctx.test=ex.test2?runTest(ex.test2):ctx.testA;return ctx}
+function runChecks(){if(!CUR)return;const ctx=buildCtx();const st=SAVE.ex[CUR.id];let firstOpen=-1;
+  CUR.steps.forEach((s,i)=>{const r=s.check(ctx)||no('');const card=$(`#st${i}`);if(!card)return;const was=card.classList.contains('done');
+    card.classList.toggle('done',r.ok);$('.smsg',card).innerHTML=r.msg||'';$('.smsg',card).className='smsg '+(r.ok?'ok':'no');
+    if(r.ok&&!was&&st.seen&&st.seen[i]!==true){ding();card.classList.add('flash');setTimeout(()=>card.classList.remove('flash'),900)}
+    st.seen=st.seen||{};st.seen[i]=r.ok;if(!r.ok&&firstOpen<0)firstOpen=i});
+  CUR.steps.forEach((s,i)=>{const card=$(`#st${i}`);if(card)card.classList.toggle('cur',i===firstOpen)});
+  const doneN=CUR.steps.filter((s,i)=>st.seen[i]).length;$('#gprog').style.width=(doneN/CUR.steps.length*100)+'%';$('#gcount').textContent=`${doneN}/${CUR.steps.length} passi`;
+  $('#qbox').hidden=firstOpen>=0&&!st.qa;
+  if(firstOpen>=0&&firstOpen!==CUR._open){CUR._open=firstOpen;const card=$(`#st${firstOpen}`);if(card&&!card.classList.contains('open')){$$('.step.open').forEach(x=>x.classList.remove('open'));card.classList.add('open')}}
+  if(firstOpen<0)st.allSteps=true;
+  drawPinsBox(ctx);persist();refreshHomeBadge()}
+function drawPinsBox(ctx){const b=$('#pinsbox');const L=ctx.an.leds.filter(l=>l.pin!==null).map(l=>`<li><span class="dotc" style="background:${LEDC[l.color]}"></span>LED ${l.color} → <b>pin ${l.pin}</b>${l.res?` · resistenza ${fmtR(l.res)}`:' · <i>senza resistenza!</i>'}</li>`);
+  const B=ctx.an.btns.filter(x=>x.pin!==null).map(x=>`<li>🔘 Pulsante → <b>pin ${x.pin}</b>${x.pull?` · pull-down ${fmtR(x.pull)}`:' · <i>senza pull-down</i>'}${x.rotated?' · <b style="color:#C62828">ruotato!</b>':''}</li>`);
+  b.innerHTML=L.length||B.length?`<ul>${L.join('')}${B.join('')}</ul><div class="pnote">Nel compito dovrai scrivere questo <b>elenco dei pin</b>.</div>`:'<div class="pnote">Qui comparirà l\'elenco dei pin che usi.</div>'}
+/* =====================================================
+   GUIDA (pannello sinistro)
+   ===================================================== */
+function renderGuide(){const ex=CUR,st=SAVE.ex[ex.id];
+  $('#guide').innerHTML=`<div class="gtop"><div class="gnum">${ex.icon}</div><div><div class="gpart">Parte ${ex.part} · Esercizio guidato ${ex.n} di 6</div><h2>${ex.title}</h2></div></div>
+    <div class="gbar"><i id="gprog"></i></div><div class="gcount" id="gcount"></div>
+    <details class="gsec" ${st.opened?'':'open'}><summary>📖 Prima di iniziare</summary><div class="glearn"><b>Cosa imparerai</b><ul>${ex.learn.map(x=>`<li>${x}</li>`).join('')}</ul></div>${ex.before}</details>
+    <details class="gsec" open><summary>🎯 La missione</summary><table class="mt">${ex.table.map((r,i)=>`<tr>${r.map(c=>i?`<td>${c}</td>`:`<th>${c}</th>`).join('')}</tr>`).join('')}</table></details>
+    <div class="gsec pins"><div class="ph">📌 I tuoi pin</div><div id="pinsbox"></div></div>
+    <div class="steps">${ex.steps.map((s,i)=>`<div class="step" id="st${i}"><div class="shd"><span class="sn">${i+1}</span><span class="stt">${s.t}</span><span class="sok">✓</span></div>
+      <div class="sbd"><div class="sdo">${s.d}</div><div class="smsg"></div>
+      <div class="sbtn"><button data-h="hint">💡 Suggerimento</button><button data-h="why">🤔 Perché si fa così?</button><button data-h="show">🛟 Mostrami come</button></div><div class="sextra"></div></div></div>`).join('')}</div>
+    <div class="qbox" id="qbox" hidden><div class="qh">🧠 Domanda finale</div><div class="qq">${ex.q.q}</div><div class="qo">${ex.q.o.map((o,i)=>`<button data-q="${i}">${esc(o)}</button>`).join('')}</div><div class="qw" hidden>${ex.q.why}</div><div class="qend" hidden></div></div>`;
+  $$('#guide .shd').forEach(h=>h.onclick=()=>{const s=h.parentElement;const o=s.classList.contains('open');$$('.step.open').forEach(x=>x.classList.remove('open'));if(!o)s.classList.add('open')});
+  $$('#guide [data-h]').forEach(b=>b.onclick=()=>{const card=b.closest('.step'),i=+card.id.slice(2),s=ex.steps[i],box=$('.sextra',card);
+    if(b.dataset.h==='hint')box.innerHTML=`<div class="xhint">💡 ${s.hint}</div>`;
+    if(b.dataset.h==='why')box.innerHTML=`<div class="xwhy">🤔 ${s.why}</div>`;
+    if(b.dataset.h==='show')showMe(s,box)});
+  $('#guide details').addEventListener('toggle',()=>{st.opened=true;persist()});
+  $$('#qbox [data-q]').forEach(b=>b.onclick=()=>{const i=+b.dataset.q;$$('#qbox [data-q]').forEach(x=>x.disabled=true);$$('#qbox [data-q]')[ex.q.a].classList.add('ok');if(i!==ex.q.a)b.classList.add('no');$('#qbox .qw').hidden=false;
+    st.qa=true;st.qok=i===ex.q.a;persist();finishEx()});
+  if(st.qa){$$('#qbox [data-q]').forEach(x=>x.disabled=true);$$('#qbox [data-q]')[ex.q.a].classList.add('ok');$('#qbox .qw').hidden=false;finishEx(true)}
+}
+function showMe(s,box){
+  if(s.code){box.innerHTML=`<div class="xshow">Ecco il codice completo di esempio, con un commento su ogni riga. Leggilo con calma: ogni commento spiega <b>perché</b> c'è quella riga.<pre class="mini">${hl(SOL[CUR.id])}</pre><button class="btn sm" id="useSol">Usa questo codice</button> <small>(sostituisce il tuo; i pin devono corrispondere al tuo circuito)</small></div>`;
+    $('#useSol',box).onclick=()=>{const an=analyze();let c=SOL[CUR.id];setCode(c);showSide('code');box.insertAdjacentHTML('beforeend','<div class="xhint">✔ Codice inserito. Se i tuoi pin sono diversi da quelli dell\'esempio, cambia i numeri nelle prime righe (oppure usa anche il circuito di esempio).</div>')}}
+  else{box.innerHTML=`<div class="xshow">Posso montare per te il <b>circuito di esempio</b> completo: guarda dove vanno i fili e le resistenze, poi prova a rifarlo da solo/a in un altro esercizio.<br><button class="btn sm" id="useRef">Monta il circuito di esempio</button></div>`;
+    $('#useRef',box).onclick=()=>{if(ED.sim)stopSim();snapshot();REFC[CUR.id]();ED.sel=null;redraw();showInspector();fitView()}}
+}
+function finishEx(silent){const st=SAVE.ex[CUR.id];const e=$('#qbox .qend');e.hidden=false;
+  const nx=EX[EX.indexOf(CUR)+1];e.innerHTML=`<div class="done">🏅 <b>Esercizio completato!</b> ${st.qok?'Risposta giusta al primo colpo.':'Rileggi la spiegazione: è la stessa idea della domanda del compito.'}</div>${nx?`<button class="btn" id="goNext">Esercizio successivo: ${nx.icon} ${nx.title} →</button>`:'<button class="btn" id="goHome">🏠 Torna all\'elenco</button>'}`;
+  st.done=true;persist();if(!silent){ding();confetti()}
+  const gn=$('#goNext');if(gn)gn.onclick=()=>openEx(nx.id);const gh=$('#goHome');if(gh)gh.onclick=showHome}
+function confetti(){const c=$('#fx'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const cols=['#FF6F00','#2E7D32','#1565C0','#F9A825','#C62828'];
+  const ps=Array.from({length:120},()=>({x:innerWidth/2,y:innerHeight/3,vx:(Math.random()-.5)*14,vy:-Math.random()*12-4,s:5+Math.random()*6,c:cols[Math.random()*5|0],r:Math.random()*6}));let f=0;
+  (function fr(){x.clearRect(0,0,c.width,c.height);ps.forEach(p=>{p.vy+=.4;p.x+=p.vx;p.y+=p.vy;p.r+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/3,p.s,p.s*.6);x.restore()});if(++f<140)requestAnimationFrame(fr);else x.clearRect(0,0,c.width,c.height)})()}
+/* =====================================================
+   NAVIGAZIONE
+   ===================================================== */
+function openEx(id){if(SIM)stopSim();CUR=EX.find(e=>e.id===id);CUR._open=-1;FLAGS={};
+  const st=SAVE.ex[id]=SAVE.ex[id]||{};
+  if(st.cir){const o=JSON.parse(st.cir);CIR.comps=o.comps;CIR.wires=o.wires;CIR.nid=o.nid}else{CIR.comps=[];CIR.wires=[];CIR.nid=1}
+  ED.hist=[];ED.sel=null;ED.bright={};
+  ta.value=st.code||CODE0;errLine=0;mon.textContent='';$('#cerr').hidden=true;
+  $('#home').hidden=true;$('#app').hidden=false;$('#ttl').innerHTML=`${CUR.icon} <b>${CUR.title}</b> <span>· esercizio guidato ${CUR.n}</span>`;
+  renderGuide();redraw();showInspector();showSide('comp');renderCode();requestAnimationFrame(()=>{fitView();runChecks()});persist();
+  if(!SAVE.tour)setTimeout(tour,500)}
+function showHome(){if(SIM)stopSim();CUR=null;$('#app').hidden=true;$('#home').hidden=false;refreshHomeBadge()}
+$('#bHome').onclick=showHome;
+$('#bGuide').onclick=()=>{const g=$('#guide');g.hidden=!g.hidden;requestAnimationFrame(fitView)};
+function refreshHomeBadge(){$$('.excard').forEach(c=>{const st=SAVE.ex[c.dataset.id]||{};const ex=EX.find(e=>e.id===c.dataset.id);const n=st.seen?Object.values(st.seen).filter(Boolean).length:0;
+  $('.exst',c).innerHTML=st.done?'🏅 Completato':n?`In corso · ${n}/${ex.steps.length} passi`:'Da iniziare';c.classList.toggle('done',!!st.done)})}
+function buildHome(){const parts=[[1,'Pulsante, LED e monitor seriale','Prepara l\'esercizio 1 del compito: il campanello.'],[2,'Lampeggi, attese e delay','Prepara l\'esercizio 2 del compito: l\'allarme.'],[3,'Sequenze lunghe e contatori','Prepara l\'esercizio 3 del compito (semaforo) e il bonus.']];
+  $('#parts').innerHTML=parts.map(([p,t,d])=>`<section class="part"><div class="phd"><span class="pn">Parte ${p}</span><div><h3>${t}</h3><p>${d}</p></div></div><div class="cards">${EX.filter(e=>e.part===p).map(e=>`<button class="excard" data-id="${e.id}"><div class="eic">${e.icon}</div><div class="etx"><b>${e.n}. ${e.title}</b><span>${e.sub}</span><em class="exst"></em></div></button>`).join('')}</div></section>`).join('');
+  $$('.excard').forEach(c=>c.onclick=()=>openEx(c.dataset.id));refreshHomeBadge()}
+/* ---------- tour iniziale ---------- */
+const TOUR=[['#guide','📖 <b>La guida</b><br>Qui trovi la spiegazione, la missione e i passi da fare. Ogni passo si spunta da solo ✓ quando l\'hai fatto bene. Se sei in difficoltà usa 💡, 🤔 e 🛟.'],
+ ['#palette','🧩 <b>I componenti</b><br>Trascina LED, resistenze e pulsanti sulla breadboard. Clicca un componente per cambiarne colore o valore; <b>R</b> lo ruota, <b>Canc</b> lo elimina.'],
+ ['#stage','🔌 <b>I fili</b><br>Clicca un pin di Arduino o un foro, poi clicca il punto di arrivo: ecco il filo! Clic nel vuoto = curva. <b>Esc</b> annulla. Passa sui fori per vedere quelli collegati.'],
+ ['#bCode','📝 <b>Il codice</b><br>Qui scrivi lo sketch, come in Tinkercad. Sotto c\'è il <b>monitor seriale</b>.'],
+ ['#bSim','▶ <b>La simulazione</b><br>Avvia e prova: tieni premuto il pulsante con il mouse per premerlo.']];
+function tour(i=0){const o=$('#tour');if(i>=TOUR.length){o.hidden=true;SAVE.tour=true;persist();return}const [sel,txt]=TOUR[i];const r=$(sel).getBoundingClientRect();
+  o.hidden=false;const hl=$('#tourHL'),b=$('#tourBox');hl.style.cssText=`left:${r.left-4}px;top:${r.top-4}px;width:${r.width+8}px;height:${r.height+8}px`;
+  b.innerHTML=`<div>${txt}</div><div class="tb"><span>${i+1}/${TOUR.length}</span><button class="btn sm ghost" id="tSkip">Salta</button><button class="btn sm" id="tNext">${i<TOUR.length-1?'Avanti →':'Iniziamo!'}</button></div>`;
+  const bw=320;let x=r.right+14,y=r.top;if(x+bw>innerWidth)x=Math.max(10,r.left-bw-14);if(r.width>innerWidth*.5){x=r.left+r.width/2-bw/2;y=r.top+60}
+  b.style.left=Math.max(10,Math.min(innerWidth-bw-10,x))+'px';b.style.top=Math.max(10,Math.min(innerHeight-200,y))+'px';
+  $('#tNext').onclick=()=>tour(i+1);$('#tSkip').onclick=()=>tour(TOUR.length)}
+$('#bTour').onclick=()=>tour(0);
+/* ---------- avvio ---------- */
+drawArduino();drawBreadboard();buildHome();renderCode();
+addEventListener('resize',()=>{if(CUR)fitView()});
+
+
+</script>
+</body>
+</html>
