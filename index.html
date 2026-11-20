@@ -120,7 +120,10 @@ body.simon .comp .btnbody{cursor:pointer}body.simon .cp{cursor:default}
 #tour{position:fixed;inset:0;z-index:80}#tourHL{position:fixed;border-radius:10px;box-shadow:0 0 0 9999px rgba(15,23,42,.55);border:3px solid #FFB300;transition:all .3s;pointer-events:none}
 #tourBox{position:fixed;width:320px;background:#fff;border-radius:12px;padding:14px;box-shadow:0 12px 30px rgba(0,0,0,.3);font-size:14.5px;line-height:1.5}
 #tourBox .tb{display:flex;gap:8px;align-items:center;margin-top:10px}#tourBox .tb span{flex:1;font-weight:800;color:var(--ink3);font-size:12.5px}
-@media (max-width:1250px){#guide{width:310px}#side{width:360px}}
+@media (max-width:1400px){#guide{width:300px}#side{width:340px}}
+@media (max-width:1200px){#guide{width:270px}#side{width:300px}.tkbar .hide-s{display:none}}
+.tkbar .btn,.tkbar .tool{white-space:nowrap;flex:none}.tkbar .ttl{min-width:0;flex:0 1 auto}
+.hole{shape-rendering:crispEdges}
 
 /* ---------- impara da zero ---------- */
 .p0{background:linear-gradient(135deg,#E3F2FD,#FFF8E1);border:2px solid #90CAF9;display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:18px}.p0 .phd{flex:1;min-width:280px}.btn.big{font-size:17px;padding:12px 22px}
@@ -274,17 +277,17 @@ code{background:#EFE6D3;color:#7A2E1C}
  </div>
 </div>
 <!-- IMPARA DA ZERO -->
-<div id="learn" hidden><header class="tkbar"><button class="btn ghost sm" id="lHome">☰ Esercizi</button><div class="ttl">Impara da zero</div></header>
+<div id="learn" hidden><header class="tkbar"><button class="btn ghost sm" id="lHome">☰<span class="hide-s"> Esercizi</span></button><div class="ttl">Impara da zero</div></header>
  <div class="lmain"><nav id="lnav"></nav><div id="lbody"></div></div></div>
 <!-- APP -->
 <div id="app" hidden>
  <header class="tkbar">
-  <button class="btn ghost sm" id="bHome">☰ Esercizi</button><button class="btn ghost sm" id="bGuide" title="Mostra/nascondi la guida">📖 Guida</button>
+  <button class="btn ghost sm" id="bHome">☰ Esercizi</button><button class="btn ghost sm" id="bGuide" title="Mostra/nascondi la guida">📖<span class="hide-s"> Guida</span></button>
   <div class="ttl" id="ttl"></div>
   <div class="sep"></div>
-  <button class="tool" id="bRot" title="Ruota (R)">⟳</button><button class="tool" id="bDel" title="Elimina (Canc)">🗑</button><button class="tool" id="bUndo" title="Annulla (Ctrl+Z)">↶</button><div class="sep"></div><button class="btn ghost sm" id="bReset" title="Ricomincia questo esercizio da zero">↺ Ricomincia esercizio</button>
+  <button class="tool" id="bRot" title="Ruota (R)">⟳</button><button class="tool" id="bDel" title="Elimina (Canc)">🗑</button><button class="tool" id="bUndo" title="Annulla (Ctrl+Z)">↶</button><div class="sep"></div><button class="btn ghost sm" id="bReset" title="Ricomincia questo esercizio da zero">↺<span class="hide-s"> Ricomincia</span></button>
   <div class="sp"></div>
-  <button class="btn ghost sm" id="bTour" title="Come si usa">❔ Come si usa</button>
+  <button class="btn ghost sm" id="bTour" title="Come si usa">❔<span class="hide-s"> Come si usa</span></button>
   <button class="btn" id="bCode">📝 Codice</button>
   <button class="btn" id="bSim">▶ Avvia simulazione</button>
  </header>
@@ -657,7 +660,10 @@ const gA=document.getElementById('g-ard'),gB=document.getElementById('g-bb'),gC=
 const el=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e};
 function toWorld(ev){const p=svg.createSVGPoint();p.x=ev.clientX;p.y=ev.clientY;return p.matrixTransform(world.getScreenCTM().inverse())}
 function applyView(){world.setAttribute('transform',`translate(${ED.view.x} ${ED.view.y}) scale(${ED.view.z})`)}
-function fitView(){const r=svg.getBoundingClientRect();const W=1000,H=390;const z=Math.min(r.width/W,r.height/H)*.97;ED.view={z,x:(r.width-W*z)/2-5*z,y:(r.height-H*z)/2-50*z};applyView()}
+function fitView(){const r=svg.getBoundingClientRect();if(r.width<20||r.height<20)return;
+  let b;try{b=document.getElementById('world').getBBox()}catch(e){b=null}if(!b||!b.width)b={x:0,y:50,width:1000,height:390};
+  const pad=34,W=b.width+pad*2,H=b.height+pad*2;const z=Math.max(.25,Math.min(2.2,Math.min(r.width/W,r.height/H)));
+  ED.view={z,x:(r.width-W*z)/2-(b.x-pad)*z,y:(r.height-H*z)/2-(b.y-pad)*z};applyView()}
 /* ---------- Arduino ---------- */
 function drawArduino(){
   gA.innerHTML='';const g=gA;
@@ -686,16 +692,22 @@ function drawArduino(){
 /* ---------- Breadboard ---------- */
 const holeEls={};
 function drawBreadboard(){
-  gB.innerHTML='';const g=gB,W=BB_COLS*P+40,H=16*P+48;
-  el('rect',{x:BX,y:BY,width:W,height:H,rx:8,fill:'#ECEEF0',stroke:'#C8CDD3','stroke-width':2},g);
-  el('rect',{x:BX+6,y:BY+24+7.5*P-5,width:W-12,height:10,fill:'#D9DDE2',rx:3},g);
-  const ln=(y,c)=>el('line',{x1:BX+18,x2:BX+W-18,y1:y,y2:y,stroke:c,'stroke-width':1.5},g);
-  ln(BY+24-9,'#D33');ln(BY+24+P+9,'#36C');ln(BY+24+15*P-9,'#D33');ln(BY+24+16*P+9,'#36C');
-  const t=(x,y,s,c='#7A8494',sz=8)=>{const e=el('text',{x,y,fill:c,'font-family':'Arial','font-size':sz,'text-anchor':'middle','font-weight':700},g);e.textContent=s};
-  [0,15].forEach(r=>{t(BX+10,BY+24+r*P+3,'+','#D33',11);t(BX+W-10,BY+24+r*P+3,'+','#D33',11)});[1,16].forEach(r=>{t(BX+10,BY+24+r*P+3,'−','#36C',11);t(BX+W-10,BY+24+r*P+3,'−','#36C',11)});
-  for(let r=3;r<=13;r++)if(r!==8){t(BX+12,BY+24+r*P+3,rowName(r));t(BX+W-12,BY+24+r*P+3,rowName(r))}
-  for(let c=0;c<BB_COLS;c++)if(c%5===0||c===BB_COLS-1){t(BX+28+c*P,BY+24+2*P+3,c+1);t(BX+28+c*P,BY+24+14*P+3,c+1)}
-  HOLES.forEach(h=>{el('rect',{x:h.x-3,y:h.y-3,width:6,height:6,rx:1,fill:'#5D646E',class:'hole','data-s':h.s},g);
+  gB.innerHTML='';const g=gB,W=BB_COLS*P+40,H=16*P+48,Y=r=>BY+24+r*P;
+  /* corpo con bordo in rilievo */
+  el('rect',{x:BX+2,y:BY+3,width:W,height:H,rx:7,fill:'rgba(0,0,0,.12)'},g);
+  el('rect',{x:BX,y:BY,width:W,height:H,rx:7,fill:'#F3F3EF',stroke:'#BFC0B8','stroke-width':1.5},g);
+  /* fasce dei binari, leggermente più scure */
+  [[Y(0)-12,Y(1)+12],[Y(15)-12,Y(16)+12]].forEach(([a,b])=>el('rect',{x:BX+4,y:a,width:W-8,height:b-a,rx:4,fill:'#E9E9E3'},g));
+  /* scanalatura centrale */
+  el('rect',{x:BX+4,y:Y(7.5)-6,width:W-8,height:12,rx:3,fill:'#D3D3CB'},g);
+  el('line',{x1:BX+6,x2:BX+W-6,y1:Y(7.5)-5,y2:Y(7.5)-5,stroke:'rgba(0,0,0,.12)','stroke-width':1.5},g);
+  const ln=(y,c)=>el('line',{x1:BX+20,x2:BX+W-20,y1:y,y2:y,stroke:c,'stroke-width':2.2,'stroke-linecap':'round'},g);
+  ln(Y(0)-10,'#D83A3A');ln(Y(1)+10,'#2F6BD1');ln(Y(15)-10,'#D83A3A');ln(Y(16)+10,'#2F6BD1');
+  const t=(x,y,s,c='#7D8088',sz=9)=>{const e=el('text',{x,y,fill:c,'font-family':'Arial,Helvetica,sans-serif','font-size':sz,'text-anchor':'middle','font-weight':700,'pointer-events':'none'},g);e.textContent=s};
+  [0,15].forEach(r=>{t(BX+11,Y(r)+4,'+','#D83A3A',13);t(BX+W-11,Y(r)+4,'+','#D83A3A',13)});[1,16].forEach(r=>{t(BX+11,Y(r)+4,'−','#2F6BD1',13);t(BX+W-11,Y(r)+4,'−','#2F6BD1',13)});
+  for(let r=3;r<=13;r++)if(r!==8){t(BX+12,Y(r)+3.5,rowName(r));t(BX+W-12,Y(r)+3.5,rowName(r))}
+  for(let c=0;c<BB_COLS;c++)if(c%5===0||c===BB_COLS-1){t(BX+28+c*P,Y(2)+4,c+1);t(BX+28+c*P,Y(14)+4,c+1)}
+  HOLES.forEach(h=>{el('rect',{x:h.x-3.5,y:h.y-3.5,width:7,height:7,rx:1.2,fill:'#4A4E57',class:'hole','data-s':h.s},g);
     const c=el('circle',{cx:h.x,cy:h.y,r:7,class:'cp holept','data-k':h.k,'data-s':h.s,fill:'transparent'},g);(holeEls[h.s]=holeEls[h.s]||[]).push(c.previousSibling)});
 }
 /* ---------- componenti ---------- */
