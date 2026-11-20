@@ -258,6 +258,10 @@ span.en{position:static!important;display:inline!important;width:auto!important;
 .tt{display:block;overflow-x:auto;max-width:100%}.tt code{white-space:nowrap}
 @media(max-width:640px){#lbody{padding:16px 14px 60px}#lbody p.big{font-size:16.5px}.tt{font-size:13.5px}.tt th,.tt td{padding:6px}.code0{font-size:12.5px}.lhead h2{font-size:22px}.lic{font-size:32px}.flt{flex-direction:column}}
 #ws{touch-action:none}
+#learn .tkbar .sp{flex:1}.tool.big{width:44px;height:44px}.lcount{color:#A9A5BD;font-weight:700;font-size:14px;display:none}
+#learn.focus #lnav{display:none}#learn.focus .lmain{justify-content:center}#learn.focus #lbody{max-width:1240px;zoom:1.18;margin:0 auto}#learn.focus .lcount{display:inline}
+#learn.focus .tkbar{height:48px}
+.svg0.bsvg{max-width:980px}#learn.focus .svg0{max-width:100%;max-height:60vh}
 </style>
 </head>
 <body>
@@ -282,7 +286,7 @@ span.en{position:static!important;display:inline!important;width:auto!important;
  </div>
 </div>
 <!-- IMPARA DA ZERO -->
-<div id="learn" hidden><header class="tkbar"><button class="btn ghost sm" id="lHome">☰<span class="hide-s"> Esercizi</span></button><div class="ttl">Impara da zero</div></header>
+<div id="learn" hidden><header class="tkbar"><button class="btn ghost sm" id="lHome">☰<span class="hide-s"> Esercizi</span></button><div class="ttl">Impara da zero</div><div class="sp"></div><span class="lcount" id="lCount"></span><button class="tool big" id="lFull" title="Schermo intero" aria-label="Schermo intero"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path class="fsi" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></header>
  <div class="lmain"><nav id="lnav"></nav><div id="lbody"></div></div></div>
 <!-- APP -->
 <div id="app" hidden>
@@ -1775,26 +1779,26 @@ const LEARN=[
 function miniBoard(){return`<svg viewBox="0 0 470 205" class="svg0"><rect x="20" y="20" width="300" height="160" rx="12" fill="#127B8A"/><rect x="6" y="50" width="44" height="36" rx="3" fill="#C9CED6"/><rect x="190" y="120" width="110" height="24" fill="#1C1D22"/>
  <rect x="110" y="26" width="200" height="14" fill="#202226"/>${Array.from({length:14},(_,i)=>`<rect x="${116+i*14}" y="30" width="6" height="6" fill="#000"/>`).join('')}
  <text x="230" y="100" fill="#fff" font-size="26" font-weight="800" font-family="Arial" text-anchor="middle">UNO</text>
- <g font-family="Open Sans" font-size="13" font-weight="700" fill="#1F2933"><path d="M210 26 Q240 0 330 10" stroke="#F57C00" stroke-width="2" fill="none"/><text x="335" y="15">i pin</text>
+ <g font-family="Atkinson Hyperlegible,Arial,sans-serif" font-size="13" font-weight="700" fill="#1F2933"><path d="M210 26 Q240 0 330 10" stroke="#F57C00" stroke-width="2" fill="none"/><text x="335" y="15">i pin</text>
  <path d="M28 68 Q0 120 40 190" stroke="#F57C00" stroke-width="2" fill="none"/><text x="44" y="196">cavo USB: energia e programma</text>
  <path d="M245 132 Q300 170 340 150" stroke="#F57C00" stroke-width="2" fill="none"/><text x="342" y="154">il mini-computer</text></g></svg>`}
 function waterSVG(open){return`<svg viewBox="0 0 520 210" class="svg0"><rect x="40" y="40" width="440" height="130" rx="20" fill="none" stroke="#90CAF9" stroke-width="16"/>
  <rect x="40" y="40" width="440" height="130" rx="20" fill="none" stroke="#1E88E5" stroke-width="5" stroke-dasharray="12 12" class="${open?'':'flow0'}"/>
- <circle cx="40" cy="105" r="30" fill="#FFB300" stroke="#E65100" stroke-width="3"/><text x="40" y="111" text-anchor="middle" font-weight="800" font-size="15" font-family="Arial">5V</text><text x="40" y="160" text-anchor="middle" font-size="12" font-family="Open Sans" font-weight="700">pompa</text>
- ${open?'<rect x="250" y="20" width="40" height="40" fill="#EBEEF2"/><text x="270" y="16" text-anchor="middle" font-size="12" font-family="Open Sans" font-weight="800" fill="#C62828">aperto!</text>':''}
+ <circle cx="40" cy="105" r="30" fill="#FFB300" stroke="#E65100" stroke-width="3"/><text x="40" y="111" text-anchor="middle" font-weight="800" font-size="15" font-family="Arial">5V</text><text x="40" y="160" text-anchor="middle" font-size="12" font-family="Atkinson Hyperlegible,Arial,sans-serif" font-weight="700">pompa</text>
+ ${open?'<rect x="250" y="20" width="40" height="40" fill="#EBEEF2"/><text x="270" y="16" text-anchor="middle" font-size="12" font-family="Atkinson Hyperlegible,Arial,sans-serif" font-weight="800" fill="#C62828">aperto!</text>':''}
  <g transform="translate(480 105)"><circle r="26" fill="${open?'#9E9E9E':'#FFEB3B'}" stroke="#555" stroke-width="2"/>${open?'':'<circle r="40" fill="#FFEB3B" opacity=".3"/>'}<text y="5" text-anchor="middle" font-size="18">💡</text></g>
- <text x="260" y="200" text-anchor="middle" font-size="13" font-family="Open Sans" font-weight="700" fill="#455A64">${open?'il giro è interrotto: la corrente si ferma':'il giro è chiuso: la corrente scorre e il LED si accende'}</text></svg>`}
-function ledSVG(rev){return`<svg viewBox="0 0 520 170" class="svg0"><text x="60" y="30" font-family="Open Sans" font-weight="800" font-size="14" fill="#C62828">5V (+)</text><text x="420" y="30" font-family="Open Sans" font-weight="800" font-size="14" fill="#1565C0">GND (−)</text>
+ <text x="260" y="200" text-anchor="middle" font-size="13" font-family="Atkinson Hyperlegible,Arial,sans-serif" font-weight="700" fill="#455A64">${open?'il giro è interrotto: la corrente si ferma':'il giro è chiuso: la corrente scorre e il LED si accende'}</text></svg>`}
+function ledSVG(rev){return`<svg viewBox="0 0 520 170" class="svg0"><text x="60" y="30" font-family="Atkinson Hyperlegible,Arial,sans-serif" font-weight="800" font-size="14" fill="#C62828">5V (+)</text><text x="420" y="30" font-family="Atkinson Hyperlegible,Arial,sans-serif" font-weight="800" font-size="14" fill="#1565C0">GND (−)</text>
  <path d="M60 80 H210 M310 80 H460" stroke="#455A64" stroke-width="4"/><g transform="translate(260 80) ${rev?'scale(-1 1)':''}"><path d="M-40 -28 L20 0 L-40 28Z" fill="${rev?'#BDBDBD':'#F23A3A'}"/><rect x="20" y="-30" width="6" height="60" fill="#333"/>
- ${rev?'':'<circle cx="0" cy="0" r="46" fill="#F23A3A" opacity=".2"/>'}<text x="-60" y="-36" font-size="12" font-family="Open Sans" font-weight="800">+</text><text x="30" y="-36" font-size="12" font-family="Open Sans" font-weight="800">−</text></g>
+ ${rev?'':'<circle cx="0" cy="0" r="46" fill="#F23A3A" opacity=".2"/>'}<text x="-60" y="-36" font-size="12" font-family="Atkinson Hyperlegible,Arial,sans-serif" font-weight="800">+</text><text x="30" y="-36" font-size="12" font-family="Atkinson Hyperlegible,Arial,sans-serif" font-weight="800">−</text></g>
  ${rev?'':'<path d="M100 80 H200" stroke="#FFB300" stroke-width="4" stroke-dasharray="10 8" class="flow0"/><path d="M320 80 H440" stroke="#FFB300" stroke-width="4" stroke-dasharray="10 8" class="flow0"/>'}
- <text x="260" y="150" text-anchor="middle" font-family="Open Sans" font-weight="700" font-size="14" fill="#455A64">${rev?'🚫 al contrario: la porta è chiusa, il LED resta spento':'✅ nel verso giusto: la corrente passa e il LED si accende'}</text></svg>`}
+ <text x="260" y="150" text-anchor="middle" font-family="Atkinson Hyperlegible,Arial,sans-serif" font-weight="700" font-size="14" fill="#455A64">${rev?'🚫 al contrario: la porta è chiusa, il LED resta spento':'✅ nel verso giusto: la corrente passa e il LED si accende'}</text></svg>`}
 const RVAL=[[0,'Nessuna'],[220,'220 Ω'],[1000,'1 kΩ'],[10000,'10 kΩ'],[100000,'100 kΩ']];
 function resSVG(v){const b=v===0?0:v<=1000?1:v<=10000?.3:.05,burn=v===0;const sp=v===0?.2:v<=220?.6:v<=1000?1:v<=10000?2.5:6;
  return`<svg viewBox="0 0 560 170" class="svg0"><path d="M30 90 H140 M240 90 H330 M430 90 H530 V140 H30 V90" stroke="#90CAF9" stroke-width="14" fill="none"/>
  <path d="M30 90 H140 M240 90 H330 M430 90 H530 V140 H30 V90" stroke="#1E88E5" stroke-width="4" fill="none" stroke-dasharray="10 10" style="animation:flow0 ${sp}s linear infinite"/>
  <text x="30" y="70" font-family="Arial" font-weight="800" font-size="14">5V</text>
- ${v===0?'<path d="M140 90 H240" stroke="#90CAF9" stroke-width="14"/><text x="190" y="70" text-anchor="middle" font-family="Open Sans" font-size="12" font-weight="800" fill="#C62828">nessun freno</text>':`<path d="M140 90 H240" stroke="#9BA3AE" stroke-width="4"/><rect x="160" y="78" width="60" height="24" rx="10" fill="#E3C79A" stroke="#A88A5A"/>${bands(v).map((c,i)=>`<rect x="${170+i*10+(i===3?6:0)}" y="78" width="5" height="24" fill="${c}"/>`).join('')}<text x="190" y="70" text-anchor="middle" font-family="Open Sans" font-size="12" font-weight="800">${fmtR(v)}</text>`}
+ ${v===0?'<path d="M140 90 H240" stroke="#90CAF9" stroke-width="14"/><text x="190" y="70" text-anchor="middle" font-family="Atkinson Hyperlegible,Arial,sans-serif" font-size="12" font-weight="800" fill="#C62828">nessun freno</text>':`<path d="M140 90 H240" stroke="#9BA3AE" stroke-width="4"/><rect x="160" y="78" width="60" height="24" rx="10" fill="#E3C79A" stroke="#A88A5A"/>${bands(v).map((c,i)=>`<rect x="${170+i*10+(i===3?6:0)}" y="78" width="5" height="24" fill="${c}"/>`).join('')}<text x="190" y="70" text-anchor="middle" font-family="Atkinson Hyperlegible,Arial,sans-serif" font-size="12" font-weight="800">${fmtR(v)}</text>`}
  <g transform="translate(380 90)">${burn?'<circle r="24" fill="#3E2723"/><text y="-30" text-anchor="middle" font-size="26">💥</text>':`<circle r="${30+20*b}" fill="#FF5252" opacity="${.35*b}"/><circle r="22" fill="#F23A3A" opacity="${.35+.65*b}"/>`}</g></svg>`}
 function bbSVG(){const N=12,X=c=>74+c*36,R='abcdefghij';let s='<svg viewBox="0 0 560 396" class="svg0" id="bb0" role="img" aria-label="Breadboard"><g font-family="Arial,Helvetica,sans-serif" font-weight="700">';
  s+='<rect x="22" y="12" width="516" height="374" rx="10" fill="#F3F3EF" stroke="#BFC0B8" stroke-width="2"/>';
@@ -1811,46 +1815,61 @@ function bbSVG(){const N=12,X=c=>74+c*36,R='abcdefghij';let s='<svg viewBox="0 0
  return s+'</g></svg><p class="bbcap" id="bbCap">Tocca o passa sopra un foro.</p>'}
 function bbCaption(g){if(g==='TP'||g==='BP')return'Tutta la riga rossa <b>+</b> è collegata: qui di solito arriva il <b>5V</b>.';if(g==='TM'||g==='BM')return'Tutta la riga blu <b>−</b> è collegata: qui di solito arriva il <b>GND</b>.';
  const c=+g.slice(1)+1;return g[0]==='A'?`Questi <b>5 fori</b> (colonna ${c}, righe a–e) sono collegati tra loro.`:`Questi <b>5 fori</b> (colonna ${c}, righe f–j) sono collegati tra loro. Non toccano quelli di sopra: in mezzo c'è la scanalatura.`}
-function btnSVG(p){return`<svg viewBox="0 0 400 200" class="svg0"><g font-family="Open Sans" font-weight="800" font-size="20"><text x="70" y="62">A</text><text x="320" y="62">A</text><text x="70" y="152">B</text><text x="320" y="152">B</text></g>
+function btnSVG(p){return`<svg viewBox="0 0 400 200" class="svg0"><g font-family="Atkinson Hyperlegible,Arial,sans-serif" font-weight="800" font-size="20"><text x="70" y="62">A</text><text x="320" y="62">A</text><text x="70" y="152">B</text><text x="320" y="152">B</text></g>
  <g stroke="#9BA3AE" stroke-width="8" stroke-linecap="round"><line x1="95" y1="55" x2="135" y2="55"/><line x1="265" y1="55" x2="305" y2="55"/><line x1="95" y1="145" x2="135" y2="145"/><line x1="265" y1="145" x2="305" y2="145"/></g>
  <rect x="130" y="30" width="140" height="140" rx="14" fill="#2D3038"/><line x1="140" y1="55" x2="260" y2="55" stroke="#FBC02D" stroke-width="5" stroke-dasharray="8 6"/><line x1="140" y1="145" x2="260" y2="145" stroke="#FBC02D" stroke-width="5" stroke-dasharray="8 6"/>
  ${p?'<line x1="200" y1="55" x2="200" y2="145" stroke="#43A047" stroke-width="8"/>':''}<circle cx="200" cy="100" r="${p?28:34}" fill="#D8343E" stroke="#7E1A20" stroke-width="3"/>
- <text x="200" y="192" text-anchor="middle" font-family="Open Sans" font-weight="700" font-size="13" fill="#455A64">${p?'premuto: A e B sono unite, la corrente passa':'rilasciato: A e B sono separate'}</text></svg>`}
+ <text x="200" y="192" text-anchor="middle" font-family="Atkinson Hyperlegible,Arial,sans-serif" font-weight="700" font-size="13" fill="#455A64">${p?'premuto: A e B sono unite, la corrente passa':'rilasciato: A e B sono separate'}</text></svg>`}
 function batterySVG(){return`<svg viewBox="0 0 520 170" class="svg0"><rect x="30" y="50" width="120" height="70" rx="8" fill="#37474F"/><rect x="150" y="70" width="10" height="30" fill="#90A4AE"/>
  <text x="60" y="95" font-size="26" font-weight="800" fill="#EF5350" font-family="Arial">−</text><text x="120" y="95" font-size="26" font-weight="800" fill="#EF5350" font-family="Arial" text-anchor="middle">+</text>
  <path d="M160 85 H260 V40 H420 V85" stroke="#C62828" stroke-width="4" fill="none"/><path d="M30 85 H10 V150 H420 V115" stroke="#263238" stroke-width="4" fill="none"/>
  <circle cx="420" cy="100" r="16" fill="#FFEB3B" stroke="#555"/><circle cx="420" cy="100" r="30" fill="#FFEB3B" opacity=".3"/>
- <g font-family="Open Sans" font-weight="800" font-size="13"><text x="300" y="32" fill="#C62828">+ (su Arduino: 5V)</text><text x="200" y="142" fill="#263238">− (su Arduino: GND)</text></g></svg>`}
+ <g font-family="Atkinson Hyperlegible,Arial,sans-serif" font-weight="800" font-size="13"><text x="300" y="32" fill="#C62828">+ (su Arduino: 5V)</text><text x="200" y="142" fill="#263238">− (su Arduino: GND)</text></g></svg>`}
 const BUILD=[
- ['Ecco Arduino (a sinistra) e i due binari della breadboard: la riga <b style="color:#C62828">rossa +</b> in alto e la riga <b style="color:#1565C0">blu −</b> in basso. Per ora sono vuoti.'],
- ['<b>1. Filo dal 5V alla riga rossa +.</b><br>Perché: così la spinta dell\'elettricità arriva su tutta la riga rossa, e ogni pezzo la può prendere da lì.'],
- ['<b>2. Filo dal GND alla riga blu −.</b><br>Perché: è la strada di ritorno. Ogni circuito deve finire qui, altrimenti la corrente non gira.'],
- ['<b>3. Il LED.</b><br>Il lato <b style="color:#C62828">+</b> in alto (arriverà il pin di Arduino), il lato <b style="color:#1565C0">−</b> in basso (andrà verso GND).'],
- ['<b>4. La resistenza da 220 Ω</b>, dal lato − del LED alla riga blu.<br>Perché: frena la corrente, così il LED non si brucia.'],
- ['<b>5. Filo dal pin 12 al lato + del LED.</b><br>Perché: da questo pin Arduino accende (HIGH) e spegne (LOW) il LED.'],
- ['<b>6. Il pulsante</b>, collegato alla riga rossa +.<br>Perché: quando lo premi, fa passare la spinta del 5V.'],
- ['<b>7. Filo dall\'altro lato del pulsante al pin 2.</b><br>Perché: da qui Arduino "ascolta" se il pulsante è premuto.'],
- ['<b>8. La resistenza da 10 kΩ</b>, dallo stesso punto del pin 2 alla riga blu.<br>Perché: quando non premi, tiene il pin a 0 volt (LOW). Senza, Arduino leggerebbe valori a caso.'],
- ['<b>Finito!</b> Prova: tieni premuto il pulsante. Con il programma giusto, Arduino legge HIGH sul pin 2 e accende il LED dal pin 12.']];
+ ['Ecco <b>Arduino</b> (a sinistra) e la <b>breadboard</b> (a destra), ancora vuota. Guarda le due righe lunghe che useremo: la riga <b style="color:#C62828">rossa +</b> in alto e la riga <b style="color:#1565C0">blu −</b> in basso.'],
+ ['<b>1. Filo dal pin 5V alla riga rossa + (in alto).</b><br>Perché: così la spinta dell\'elettricità arriva su tutta la riga rossa, e ogni pezzo la può prendere da lì.'],
+ ['<b>2. Filo dal pin GND alla riga blu − (in basso).</b><br>Perché: è la strada di ritorno. Ogni circuito deve finire qui, altrimenti la corrente non gira.'],
+ ['<b>3. Il LED</b>, nella parte di sotto, con le gambe nelle colonne 12 e 13.<br>Il lato <b style="color:#C62828">+</b> è nella colonna 12 (lì arriverà il pin di Arduino), il lato <b style="color:#1565C0">−</b> nella colonna 13 (andrà verso GND).'],
+ ['<b>4. La resistenza da 220 Ω</b>, dalla colonna 13 (lato − del LED) alla riga blu −.<br>Perché: frena la corrente, così il LED non si brucia.'],
+ ['<b>5. Filo dal pin 12 alla colonna 12</b> (lato + del LED).<br>Perché: da questo pin Arduino accende (HIGH) e spegne (LOW) il LED.'],
+ ['<b>6. Il pulsante</b>, a cavallo della scanalatura centrale (colonne 5 e 7), e un filo dalle sue gambe <b>di sopra</b> alla riga rossa +.<br>Perché: quando lo premi, fa passare la spinta del 5V verso le gambe di sotto.'],
+ ['<b>7. Filo dalle gambe di sotto del pulsante al pin 2.</b><br>Perché: da qui Arduino "ascolta" se il pulsante è premuto.'],
+ ['<b>8. La resistenza da 10 kΩ</b>, dalle gambe di sotto del pulsante alla riga blu −.<br>Perché: quando non premi, tiene il pin 2 a 0 volt (LOW). Senza, Arduino leggerebbe valori a caso.'],
+ ['<b>Finito!</b> Tieni premuto il pulsante: la spinta del 5V arriva al pin 2, Arduino legge HIGH e, con il programma giusto, accende il LED dal pin 12.']];
 function buildSVG(k,pr){const v=i=>k>=i?(k===i?'now':''):'off';const on=k>=9&&pr;
- const R=(x,y,lab)=>`<rect x="${x-9}" y="${y}" width="18" height="50" rx="7" fill="#E3C79A" stroke="#A88A5A"/><rect x="${x-9}" y="${y+10}" width="18" height="5" fill="#8D6E63"/><rect x="${x-9}" y="${y+20}" width="18" height="5" fill="#D32F2F"/><rect x="${x-9}" y="${y+36}" width="18" height="5" fill="#C9A227"/><text x="${x+16}" y="${y+30}" font-size="13" font-weight="800">${lab}</text>`;
- return`<svg viewBox="0 0 640 300" class="svg0 bsvg"><style>.bsvg .off{opacity:0}.bsvg .now{animation:now0 1s ease-in-out infinite}.bsvg g{transition:opacity .3s}@keyframes now0{50%{filter:drop-shadow(0 0 6px #FF9800)}}</style>
- <g font-family="Open Sans" font-size="13" font-weight="700" fill="#1F2933">
- <rect x="20" y="30" width="130" height="230" rx="10" fill="#127B8A"/><text x="85" y="150" fill="#fff" font-size="20" font-weight="800" text-anchor="middle" font-family="Arial">Arduino</text>
- ${[['pin 12',60],['5V',100],['pin 2',170],['GND',230]].map(([t,y])=>`<rect x="140" y="${y-6}" width="12" height="12" fill="#202226"/><text x="134" y="${y+5}" fill="#fff" font-size="12" text-anchor="end">${t}</text>`).join('')}
- <line x1="200" y1="40" x2="400" y2="40" stroke="#E53935" stroke-width="6" stroke-linecap="round"/><text x="408" y="45" fill="#C62828">riga + (5V)</text>
- <line x1="200" y1="280" x2="620" y2="280" stroke="#1E88E5" stroke-width="6" stroke-linecap="round"/><text x="470" y="270" fill="#1565C0">riga − (GND)</text>
- <g class="${v(1)}"><path d="M152 100 H185 V40 H200" stroke="#E53935" stroke-width="4" fill="none"/></g>
- <g class="${v(2)}"><path d="M152 230 H190 V280 H200" stroke="#263238" stroke-width="4" fill="none"/></g>
- <g class="${v(3)}">${on?'<circle cx="520" cy="135" r="34" fill="#FFEB3B" opacity=".45"/>':''}<path d="M505 115 H535 L520 145Z" fill="${on?'#FDD835':'#F9E79F'}" stroke="#7a6a00"/><line x1="505" y1="147" x2="535" y2="147" stroke="#7a6a00" stroke-width="3"/><line x1="520" y1="100" x2="520" y2="115" stroke="#555" stroke-width="3"/><line x1="520" y1="147" x2="520" y2="170" stroke="#555" stroke-width="3"/><text x="540" y="112" fill="#C62828" font-size="16" font-weight="800">+</text><text x="540" y="165" fill="#1565C0" font-size="16" font-weight="800">−</text><text x="560" y="138">LED</text></g>
- <g class="${v(4)}"><line x1="520" y1="170" x2="520" y2="180" stroke="#555" stroke-width="3"/>${R(520,180,'220 Ω')}<line x1="520" y1="230" x2="520" y2="280" stroke="#555" stroke-width="3"/></g>
- <g class="${v(5)}"><path d="M152 60 H165 V18 H520 V100" stroke="#F57C00" stroke-width="4" fill="none"/></g>
- <g class="${v(6)}"><line x1="300" y1="40" x2="300" y2="80" stroke="#555" stroke-width="3"/><rect x="278" y="80" width="44" height="44" rx="6" fill="#2D3038"/><circle cx="300" cy="102" r="${pr&&k>=9?11:14}" fill="#D8343E"/><line x1="300" y1="124" x2="300" y2="170" stroke="#555" stroke-width="3"/><text x="330" y="106">pulsante</text></g>
- <g class="${v(7)}"><path d="M152 170 H300" stroke="#43A047" stroke-width="4" fill="none"/><circle cx="300" cy="170" r="5" fill="#333"/></g>
- <g class="${v(8)}"><line x1="300" y1="170" x2="300" y2="190" stroke="#555" stroke-width="3"/>${R(300,190,'10 kΩ')}<line x1="300" y1="240" x2="300" y2="280" stroke="#555" stroke-width="3"/></g>
+ const X=c=>300+c*34,RY=r=>r<5?120+r*18:232+(r-5)*18,TOPP=80,TOPM=60,BOTM=340,BOTP=360,F='Atkinson Hyperlegible,Arial,sans-serif';
+ const W=(d,c)=>`<path d="${d}" stroke="#fff" stroke-width="9" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="${d}" stroke="${c}" stroke-width="5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>`;
+ const dot=(x,y,c)=>`<circle cx="${x}" cy="${y}" r="5" fill="${c}" stroke="#fff" stroke-width="2"/>`;
+ const RES=(x,y1,y2,b,lab)=>{const m=(y1+y2)/2;return`<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="#8E949C" stroke-width="3"/><rect x="${x-7}" y="${m-13}" width="14" height="26" rx="5" fill="#E3C79A" stroke="#A88A5A"/>${b.map((c,i)=>`<rect x="${x-7}" y="${m-9+i*6}" width="14" height="3.5" fill="${c}"/>`).join('')}${dot(x,y1,'#8E949C')}${dot(x,y2,'#8E949C')}<text x="${x+12}" y="${m+4}" font-size="13" font-weight="700" fill="#232136">${lab}</text>`};
+ let bb=`<rect x="268" y="40" width="474" height="340" rx="10" fill="#F3F3EF" stroke="#BFC0B8" stroke-width="2"/><rect x="274" y="48" width="462" height="44" rx="5" fill="#E9E9E3"/><rect x="274" y="328" width="462" height="44" rx="5" fill="#E9E9E3"/><rect x="274" y="205" width="462" height="14" rx="3" fill="#D3D3CB"/>`;
+ const ln=(y,c)=>`<line x1="292" x2="718" y1="${y}" y2="${y}" stroke="${c}" stroke-width="2.5"/>`;
+ bb+=ln(TOPM-10,'#2F6BD1')+ln(TOPP+10,'#D83A3A')+ln(BOTM-10,'#2F6BD1')+ln(BOTP+10,'#D83A3A');
+ for(let c=0;c<13;c++){[TOPM,TOPP,BOTM,BOTP].forEach(y=>bb+=`<rect x="${X(c)-4}" y="${y-4}" width="8" height="8" rx="1.5" fill="#4A4E57"/>`);for(let r=0;r<10;r++)bb+=`<rect x="${X(c)-4}" y="${RY(r)-4}" width="8" height="8" rx="1.5" fill="#4A4E57"/>`;bb+=`<text x="${X(c)}" y="106" font-size="10" text-anchor="middle" fill="#8A8698">${c+1}</text>`}
+ 'abcdefghij'.split('').forEach((l,r)=>bb+=`<text x="282" y="${RY(r)+4}" font-size="10" text-anchor="middle" fill="#8A8698">${l}</text><text x="728" y="${RY(r)+4}" font-size="10" text-anchor="middle" fill="#8A8698">${l}</text>`);
+ const lab=(y,t,c)=>`<text x="752" y="${y+5}" font-size="14" font-weight="700" fill="${c}">${t}</text>`;
+ bb+=lab(TOPP,'+ (5V)','#C62828')+lab(BOTM,'− (GND)','#1565C0')+lab(TOPM,'−','#8A8698')+lab(BOTP,'+','#8A8698');
+ const ard=`<rect x="20" y="70" width="180" height="280" rx="12" fill="#127B8A"/><text x="88" y="215" fill="#fff" font-size="22" font-weight="700" text-anchor="middle">Arduino</text>`+[['5V',110],['pin 2',180],['pin 12',250],['GND',320]].map(([t,y])=>`<rect x="186" y="${y-8}" width="16" height="16" rx="2" fill="#1C1D22"/><text x="178" y="${y+5}" fill="#fff" font-size="14" font-weight="700" text-anchor="end">${t}</text>`).join('');
+ const ledOn=on?`<circle cx="${X(11.5)}" cy="246" r="36" fill="#FFD54F" opacity=".55"/>`:'';
+ const LX1=X(11),LX2=X(12),LY=RY(7);
+ return`<svg viewBox="0 0 830 400" class="svg0 bsvg"><style>.bsvg .off{opacity:0}.bsvg .now{animation:now0 1s ease-in-out infinite}@keyframes now0{50%{filter:drop-shadow(0 0 7px #FF9800)}}</style><g font-family="${F}">
+ ${ard}${bb}
+ <g class="${v(1)}">${W(`M202 110 H232 V${TOPP} H${X(0)}`,'#D83A3A')}${dot(X(0),TOPP,'#D83A3A')}</g>
+ <g class="${v(2)}">${W(`M202 320 H232 V${BOTM} H${X(0)}`,'#263238')}${dot(X(0),BOTM,'#263238')}</g>
+ <g class="${v(3)}">${ledOn}<line x1="${LX1}" y1="${LY}" x2="${LX1}" y2="252" stroke="#8E949C" stroke-width="3"/><line x1="${LX2}" y1="${LY}" x2="${LX2}" y2="252" stroke="#8E949C" stroke-width="3"/>
+   <path d="M${LX1-9} 254 V236 A${(LX2-LX1)/2+9} ${(LX2-LX1)/2+9} 0 0 1 ${LX2+9} 236 V254Z" fill="${on?'#FFC107':'#F6D365'}" stroke="#8a6d00" stroke-width="1.5"/>
+   <text x="${LX1}" y="250" font-size="15" font-weight="700" fill="#C62828" text-anchor="middle">+</text><text x="${LX2}" y="250" font-size="15" font-weight="700" fill="#1565C0" text-anchor="middle">−</text>
+   ${dot(LX1,LY,'#8E949C')}${dot(LX2,LY,'#8E949C')}<text x="${X(11.5)}" y="${236-(LX2-LX1)/2-16}" font-size="14" font-weight="700" text-anchor="middle" fill="#232136">LED</text></g>
+ <g class="${v(4)}">${RES(X(12),RY(9),BOTM,['#D32F2F','#D32F2F','#6D4C41'],'')}<text x="${X(12)-14}" y="${RY(9)+24}" font-size="13" font-weight="700" fill="#232136" text-anchor="end">220 Ω</text></g>
+ <g class="${v(5)}">${W(`M202 250 H240 V${RY(8)} H${X(11)}`,'#F57C00')}${dot(X(11),RY(8),'#F57C00')}</g>
+ <g class="${v(6)}"><rect x="${X(4)-12}" y="180" width="${X(6)-X(4)+24}" height="64" rx="6" fill="#2D3038"/><circle cx="${X(5)}" cy="212" r="${on?15:18}" fill="#D8343E" stroke="#7E1A20" stroke-width="2"/>
+   ${[X(4),X(6)].map(x=>dot(x,RY(4),'#8E949C')+dot(x,RY(5),'#8E949C')).join('')}<text x="${X(5)}" y="174" font-size="14" font-weight="700" text-anchor="middle" fill="#232136">pulsante</text>
+   ${W(`M${X(6)} ${RY(0)} V${TOPP}`,'#D83A3A')}${dot(X(6),RY(0),'#D83A3A')}${dot(X(6),TOPP,'#D83A3A')}</g>
+ <g class="${v(7)}">${W(`M202 180 H250 V${RY(7)} H${X(6)}`,'#2E9E44')}${dot(X(6),RY(7),'#2E9E44')}</g>
+ <g class="${v(8)}">${RES(X(4),RY(9),BOTM,['#6D4C41','#212121','#FF8F00'],'10 kΩ')}</g>
  </g></svg>`}
 /* ---------- vista "Impara da zero" ---------- */
 let LI=0,lfIv=null;
+function markCh(i){SAVE.learn=SAVE.learn||{};if(SAVE.learn[i])return;SAVE.learn[i]=1;persist();const b=$$('#lnav button')[i];if(b)b.classList.add('ok')}
 function openLearn(i=0){if(SIM)stopSim();CUR=null;$('#home').hidden=true;$('#app').hidden=true;$('#learn').hidden=false;showChapter(i)}
 function showChapter(i){LI=Math.max(0,Math.min(LEARN.length-1,i));clearInterval(lfIv);const C=LEARN[LI];
   $('#lnav').innerHTML=LEARN.map((c,j)=>`<button class="${j===LI?'on':''} ${(SAVE.learn||{})[j]?'ok':''}" data-i="${j}"><span>${c.ic}</span>${j+1}. ${c.t}</button>`).join('');
@@ -1858,7 +1877,7 @@ function showChapter(i){LI=Math.max(0,Math.min(LEARN.length-1,i));clearInterval(
   $('#lbody').innerHTML=`<div class="lhead"><div class="lic">${C.ic}</div><div><div class="lk">Capitolo ${LI+1} di ${LEARN.length}</div><h2>${C.t}</h2></div></div>${C.h}
     ${C.q?`<div class="q0"><div class="qh">🧠 Domanda veloce</div><div class="qq">${C.q[0]}</div><div class="qo">${C.q[1].map((o,j)=>`<button data-j="${j}">${esc(o)}</button>`).join('')}</div><div class="qw" hidden>${C.q[3]}</div></div>`:''}
     <div class="lfoot">${LI>0?'<button class="btn ghost" id="lPrev">← Indietro</button>':'<span></span>'}${LI<LEARN.length-1?'<button class="btn" id="lNext">Avanti →</button>':''}</div>`;
-  $('#lbody').scrollTop=0;annotate($('#lbody'));
+  $('#lbody').scrollTop=0;annotate($('#lbody'));if(!C.q&&!$('#lBuild'))markCh(LI);
   if(C.q)$$('#lbody .qo button').forEach(b=>b.onclick=()=>{const j=+b.dataset.j;$$('#lbody .qo button').forEach(x=>x.disabled=true);$$('#lbody .qo button')[C.q[2]].classList.add('ok');if(j!==C.q[2])b.classList.add('no');else{ding();SAVE.learn=SAVE.learn||{};SAVE.learn[LI]=1;persist();$$('#lnav button')[LI].classList.add('ok')}$('#lbody .qw').hidden=false});
   const P=$('#lPrev'),N=$('#lNext');if(P)P.onclick=()=>showChapter(LI-1);if(N)N.onclick=()=>showChapter(LI+1);
   if($('#lWater')){let o=false;const d=()=>{$('#lWater').innerHTML=waterSVG(o);$('#lwBtn').textContent=o?'🔗 Chiudi il circuito':'✂️ Apri il circuito'};d();$('#lwBtn').onclick=()=>{o=!o;d()}}
@@ -1871,7 +1890,7 @@ function showChapter(i){LI=Math.max(0,Math.min(LEARN.length-1,i));clearInterval(
   if($('#lBtn')){const d=p=>$('#lBtn').innerHTML=btnSVG(p);d(false);const b=$('#lbBtn');b.onpointerdown=()=>d(true);b.onpointerup=b.onpointerleave=()=>d(false)}
   if($('#lfMon')){let res=false,pr=false;const mon=$('#lfMon');lfIv=setInterval(()=>{const v=pr?1:res?0:(Math.random()<.5?1:0);$('#lfTxt').innerHTML=pr?'✅ Premuto: arriva il 5V → <b>HIGH</b>':res?'✅ Non premuto, con resistenza: il pin è a 0 volt → <b>LOW</b>':'😵 Non premuto, senza resistenza: il pin è in aria → <b>valori a caso</b>';mon.textContent=(mon.textContent+v+(v?'  ← HIGH':'  ← LOW')+'\n').split('\n').slice(-9).join('\n')},300);
     $('#lfRes').onclick=()=>{res=!res;$('#lfRes').textContent=res?'➖ Togli la resistenza':'➕ Metti la resistenza da 10 kΩ'};const b=$('#lfBtn');b.onpointerdown=()=>pr=true;b.onpointerup=b.onpointerleave=()=>pr=false}
-  if($('#lBuild')){let k=0,pr=false;const d=()=>{$('#lBuild').innerHTML=buildSVG(k,pr);$('#lbTxt').innerHTML=BUILD[k][0];$('#lbPrev').disabled=k===0;$('#lbNext').hidden=k===BUILD.length-1;$('#lbPress').hidden=k!==BUILD.length-1};d();
+  if($('#lBuild')){let k=0,pr=false;const d=()=>{if(k===BUILD.length-1)markCh(LI);$('#lBuild').innerHTML=buildSVG(k,pr);$('#lbTxt').innerHTML=BUILD[k][0];$('#lbPrev').disabled=k===0;$('#lbNext').hidden=k===BUILD.length-1;$('#lbPress').hidden=k!==BUILD.length-1};d();
     $('#lbPrev').onclick=()=>{k=Math.max(0,k-1);d()};$('#lbNext').onclick=()=>{k++;d()};const b=$('#lbPress');b.onpointerdown=()=>{pr=true;d()};b.onpointerup=b.onpointerleave=()=>{pr=false;d()}}
   const g=$('#lGo');if(g)g.onclick=()=>openEx('e1');
 }
@@ -1901,6 +1920,19 @@ addEventListener('keydown',e=>{if($('#learn').hidden||e.target.closest('input,te
   if(e.key==='ArrowLeft'&&LI>0){e.preventDefault();showChapter(LI-1)}});
 /* Esc chiude finestre e tour */
 addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!$('#ask').hidden)$('#ask').hidden=true;else if(!$('#tour').hidden)tour(TOUR.length)});
+
+/* ---------- schermo intero per la proiezione ---------- */
+(()=>{const L=$('#learn'),B=$('#lFull'),P=$('.fsi',B);
+  const set=on=>{L.classList.toggle('focus',on);B.title=on?'Esci dallo schermo intero':'Schermo intero';B.setAttribute('aria-label',B.title);
+    P.setAttribute('d',on?'M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5':'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5')};
+  B.onclick=()=>{const on=!L.classList.contains('focus');set(on);
+    try{if(on&&document.documentElement.requestFullscreen&&!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});
+        if(!on&&document.fullscreenElement)document.exitFullscreen().catch(()=>{})}catch(e){}};
+  document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&L.classList.contains('focus'))set(false)});
+  const _sc=showChapter;showChapter=function(i){_sc(i);const c=$('#lCount');if(c)c.textContent=`Capitolo ${LI+1} di ${LEARN.length}`};
+  const _h=showHome;showHome=function(){if(L.classList.contains('focus')){set(false);try{document.fullscreenElement&&document.exitFullscreen()}catch(e){}}_h()};
+  $('#bHome').onclick=()=>showHome();$('#lHome').onclick=()=>showHome();
+})();
 
 
 </script>
